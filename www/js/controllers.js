@@ -1,4 +1,4 @@
-angular.module('directory.controllers', [])
+angular.module('wattapp.controllers', [])
 
     .controller('MetersIndexCtrl', function ($scope, MetersService) {
 

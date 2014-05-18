@@ -1,4 +1,4 @@
-angular.module('directory.services', [])
+angular.module('wattapp.services', [])
 
     .factory('MetersService', function($q) {
 

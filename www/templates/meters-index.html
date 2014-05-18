@@ -11,7 +11,7 @@
 
     <ion-content has-header="true">
         <ion-list>
-            <ion-item ng-repeat="meter in meters" type="item-text-wrap" href="#/meter/{{meter.id}}">
+            <ion-item ng-repeat="meter in meters" type="item-text-wrap" href="#/tab/meter/{{meter.id}}">
                  {{meter.name}} &nbsp;&nbsp;&nbsp;&nbsp;{{meter.demand}} KW
                  <button id='delta_info' ng-class="{'button button-small icon-right button-assertive': meter.inc < 0, 'button button-small button-balanced': meter.inc > 0}">{{meter.inc}}%</button>
                 <p>{{meter.location}}</p>

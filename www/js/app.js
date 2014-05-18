@@ -1,22 +1,18 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
-// 'directory' is the name of this angular module example (also set in a <body> attribute in index.html)
+// 'wattapp' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-// 'directory.services' is found in services.js
-// 'directory.controllers' is found in controllers.js
-angular.module('directory', ['ionic','dx','directory.services', 'directory.controllers'])
+// 'wattapp.services' is found in services.js
+// 'wattapp.controllers' is found in controllers.js
+angular.module('wattapp', ['ionic','dx','wattapp.services', 'wattapp.controllers'])
     
-    // .run(function($ionicPlatform, PushProcessingService){
-    //     $ionicPlatform.ready(function(){
-    //         if (parseFloat(window.device.version) === 7.0) {
-    //           document.body.style.marginTop = "20px";
-    //           console.log("statusbar margin adjusted")
-    //         }
-    //         else
-    //           console.log("statusbar margin NOT adjusted")
-
-    //     })
-    // });
-
+    .run(function($ionicPlatform) {
+      $ionicPlatform.ready(function() {
+        if(window.StatusBar) {
+          // org.apache.cordova.statusbar required
+          StatusBar.styleDefault();
+        }
+      });
+    })
 
     .config(function ($stateProvider, $urlRouterProvider) {
 
@@ -26,31 +22,64 @@ angular.module('directory', ['ionic','dx','directory.services', 'directory.contr
         // Each state's controller can be found in controllers.js
         $stateProvider
 
-            .state('meter-index', {
-                url: '/',
-                templateUrl: 'templates/meters-index.html',
-                controller: 'MetersIndexCtrl'
+            .state('tab', {
+                url: '/tab',
+                abstract: true,
+                templateUrl: 'templates/tabs.html',
             })
 
-            .state('meter-detail', {
+            // Each tab has its own nav history stack:
+
+            .state('tab.meter', {
+                url: '/meter',
+                views:{
+                    'tab-meter':{
+                        templateUrl: 'templates/meters-index.html',
+                        controller: 'MetersIndexCtrl'
+                    }
+                }
+            })
+
+            .state('tab.meter-detail', {
                 url: '/meter/:meterId',
-                templateUrl: 'templates/meters-detail.html',
-                controller: 'MetersDetailCtrl'
+                views:{
+                    'tab-meter':{
+                        templateUrl: 'templates/meters-detail.html',
+                        controller: 'MetersDetailCtrl'
+                    }
+                }
             })
 
-            .state('meter-reports', {
+            .state('tab.meter-reports', {
                 url: '/meter/:meterId/reports',
-                templateUrl: 'templates/meters-reports.html',
-                controller: 'MetersReportsCtrl'
+                views:{
+                    'tab-meter':{
+                        templateUrl: 'templates/meters-reports.html',
+                        controller: 'MetersReportsCtrl'
+                    }
+                }
             })
 
-            .state('meters-reports-consumption', {
+            .state('tab.meters-reports-consumption', {
                 url: '/meter/:meterId/reports/consumption',
-                templateUrl: 'templates/meters-reports-consumption.html',
-                controller: 'MetersReportsConsumptionCtrl'
+                views:{
+                    'tab-meter':{
+                        templateUrl: 'templates/meters-reports-consumption.html',
+                        controller: 'MetersReportsConsumptionCtrl'
+                    }
+                }
+            })
+
+            .state('tab.building', {
+                url: '/building',
+                views:{
+                    'tab-building':{
+                        templateUrl: 'templates/buildings-index.html',
+                        //controller: ''
+                    }
+                }
             });
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/');
-
+        $urlRouterProvider.otherwise('/tab/meter');
     });
