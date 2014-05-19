@@ -3,7 +3,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'wattapp.services' is found in services.js
 // 'wattapp.controllers' is found in controllers.js
-angular.module('wattapp', ['ionic','dx','wattapp.services', 'wattapp.controllers'])
+angular.module('wattapp', ['ionic','dx','wattapp.services', 'wattapp.controllers', 'wattapp.building_services','wattapp.building_controllers'])
     
     .run(function($ionicPlatform) {
       $ionicPlatform.ready(function() {
@@ -75,7 +75,7 @@ angular.module('wattapp', ['ionic','dx','wattapp.services', 'wattapp.controllers
                 views:{
                     'tab-building':{
                         templateUrl: 'templates/buildings-index.html',
-                        //controller: ''
+                        controller: 'BuildingsIndexCtrl'
                     }
                 }
             });
