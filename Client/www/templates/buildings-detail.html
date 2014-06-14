@@ -1,0 +1,18 @@
+<ion-view title="Building Details">
+  <ion-content has-header="true" padding="true">
+
+      <div class="details">
+          <img src="pics/buildingenergy.jpg" width="80" height="80"/>
+          <h4>{{building.name}}</h4>
+          <p style="color:red">To do</p>
+          <p style="color:red">To do</p>
+      </div>
+
+      <div class="list card">
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.id}}"><i class="icon ion-flash"></i>Show eletric meters</a>
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.id}}"><i class="icon ion-stats-bars"></i>Show natural gas meters</a>
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.id}}"><i class="icon ion-waterdrop"></i>Show water meters</a>
+          <div class="item" style="color:red">today $$$$ (to do)</div>
+      </div>
+  </ion-content>
+</ion-view>

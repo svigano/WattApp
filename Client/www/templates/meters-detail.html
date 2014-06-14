@@ -1,0 +1,20 @@
+<ion-view title="Meter Details">
+  <ion-content has-header="true" padding="true">
+
+      <div class="details">
+          <img src="pics/eletricMeter.jpg" width="80" height="80"/>
+          <h4>{{meter.name}}</h4>
+          <p>Current Demand: {{meter.demand}} (Kw)</p>
+          <p>Location: {{meter.location}}</p>
+      </div>
+
+      <div class="list card">
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.id}}/reports"><i class="icon ion-arrow-graph-up-right"></i>Show today vs yesterday </a>
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.id}}/reports"><i class="icon ion-arrow-graph-up-right"></i>Show demand and weather</a>
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.id}}/reports/consumption"><i class="icon ion-stats-bars"></i>Last 7 days consumption</a>          
+          <div class="item" style="color:red">Next demand Peak (to do)</div>
+          <div class="item" style="color:red">today $$$$ (to do)</div>
+          <div class="item" style="color:red">this week $$$$ (to do)</div>
+      </div>
+  </ion-content>
+</ion-view>
