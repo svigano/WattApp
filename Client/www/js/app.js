@@ -1,9 +1,10 @@
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'wattapp' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'wattapp.services' is found in services.js
-// 'wattapp.controllers' is found in controllers.js
-angular.module('wattapp', ['ionic','dx','wattapp.services', 'wattapp.controllers', 'wattapp.building_services','wattapp.building_controllers'])
+
+// REMARK
+// To use the in-memory meter service inject -> 'wattapp.services'
+// To use the local wattApp mock server (node) for the meter service inject -> 'wattapp.rest-services'
+// The server is locacate in the server folder
+
+angular.module('wattapp', ['ionic','dx','wattapp.rest-services', 'wattapp.controllers', 'wattapp.building_services','wattapp.building_controllers'])
     
     .run(function($ionicPlatform) {
       $ionicPlatform.ready(function() {

@@ -3,14 +3,14 @@ angular.module('wattapp.services', [])
     .factory('MetersService', function($q) {
 
         var meters = [
-            {"id": 1, "location" : "507 Michigan","name":"Main utility meter","demand": 340, "inc": -2},
-            {"id": 2, "location" : "5757 Corporate","name":"Main meter","demand": 680, "inc": +0.3},
-            {"id": 3, "location" : "Mke Hangar","name":"Utility meter","demand": 430, "inc": +5},
-            {"id": 4, "location" : "Plymouth","name":"Building 36 meter","demand": 298, "inc": -0.2},
-            {"id": 5, "location" : "York","name":"CTU meter","demand": 1200, "inc": -2},
-            {"id": 6, "location" : "5757 Solar","name":"Solar meter","demand": 910, "inc": -3},
-            {"id": 7, "location" : "5757 Corporate","name":"Roof Array meter","demand": 545, "inc": +0.7},
-            {"id": 8, "location" : "5757 Corporate","name":"Pumps eletric meter","demand": 212, "inc": +1.1}
+            {"Id": 1, "Location" : "507 Michigan","Name":"Main utility meter","Demand": 340, "Inc": -2},
+            {"Id": 2, "Location" : "5757 Corporate","Name":"Main meter","Demand": 680, "Inc": +0.3},
+            {"Id": 3, "Location" : "Mke Hangar","Name":"Utility meter","Demand": 430, "Inc": +5},
+            {"Id": 4, "Location" : "Plymouth","Name":"Building 36 meter","Demand": 298, "Inc": -0.2},
+            {"Id": 5, "Location" : "York","Name":"CTU meter","Demand": 1200, "Inc": -2},
+            {"Id": 6, "Location" : "5757 Solar","Name":"Solar meter","Demand": 910, "Inc": -3},
+            {"Id": 7, "Location" : "5757 Corporate","Name":"Roof Array meter","Demand": 545, "Inc": +0.7},
+            {"Id": 8, "location" : "5757 Corporate","Name":"Pumps eletric meter","Demand": 212, "Inc": +1.1}
         ];
 
         // We use promises to make this api asynchronous. This is clearly not necessary when using in-memory data
@@ -20,26 +20,23 @@ angular.module('wattapp.services', [])
 
         return {
             findAll: function() {
-                var deferred = $q.defer();
-                deferred.resolve(meters);
-                return deferred.promise;
+                console.log("----------- InMemory -------------")                
+                return meters;
             },
 
             findById: function(meterId) {
-                var deferred = $q.defer();
+                console.log("----------- InMemory -------------")
                 var meter = meters[meterId - 1];
-                deferred.resolve(meter);
-                return deferred.promise;
+                console.log(meter);
+                return meter;
             },
 
             findByName: function(searchKey) {
-                var deferred = $q.defer();
                 var results = meters.filter(function(element) {
                     var fullName = element.firstName + " " + element.lastName;
                     return fullName.toLowerCase().indexOf(searchKey.toLowerCase()) > -1;
                 });
-                deferred.resolve(results);
-                return deferred.promise;
+                return results;
             },
         }
 
@@ -77,17 +74,18 @@ angular.module('wattapp.services', [])
               ];
 
         var dataSamplesLastWeekConsumption = [
-              { day: "Monday", consumption: 500},
-              { day: "Tuesday", consumption: 550},
-              { day: "Wednesday", consumption: 480},
-              { day: "Thursday", consumption: 600},
-              { day: "Friday", consumption: 560},
-              { day: "Saturday", consumption: 320},
-              { day: "Sunday", consumption: 380}
+              { t: "Monday", val: 500},
+              { t: "Tuesday", val: 550},
+              { t: "Wednesday", val: 480},
+              { t: "Thursday", val: 600},
+              { t: "Friday", val: 560},
+              { t: "Saturday", val: 320},
+              { t: "Sunday", val: 380}
               ];
 
         return {
             getDemandTodayVsYesterday: function(meterId) {
+                console.log("----------- InMemory -------------")
                 var deferred = $q.defer();
                 deferred.resolve(dataSamplesDemandTodayVsYesterday);
                 //return deferred.promise;
@@ -95,6 +93,7 @@ angular.module('wattapp.services', [])
             },
 
             getLastWeekConsumption: function(meterId) {
+                console.log("----------- InMemory -------------")
                 return dataSamplesLastWeekConsumption;
             },
 
