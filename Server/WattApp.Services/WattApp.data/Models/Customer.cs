@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace WattApp.Services.Models
+namespace WattApp.data.Models
 {
     public class Customer
     {

@@ -46,7 +46,22 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="LogentriesCore">
+      <HintPath>..\packages\logentries.core.2.4.4\lib\net40\LogentriesCore.dll</HintPath>
+    </Reference>
+    <Reference Include="LogentriesNLog">
+      <HintPath>..\packages\logentries.nlog.2.2.0\lib\net40\LogentriesNLog.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.1.0\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog.Extended">
+      <HintPath>..\packages\NLog.Extended.3.1.0.0\lib\net45-full\NLog.Extended.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -89,23 +104,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\Mock\MockMeterHistoryController.cs" />
     <Compile Include="Controllers\Mock\MockMetersController.cs" />
+    <Compile Include="Filter\TrackTimeFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201407062018101_Initial.cs" />
-    <Compile Include="Migrations\201407062018101_Initial.Designer.cs">
-      <DependentUpon>201407062018101_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Customer.cs" />
-    <Compile Include="Models\WattAppContext.cs" />
+    <Compile Include="Models\DashboardItemModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +135,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201407062018101_Initial.resx">
-      <DependentUpon>201407062018101_Initial.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\WattApp.data\WattApp.data.csproj">
+      <Project>{ddef6c39-51ba-42b2-ac82-785f584578bc}</Project>
+      <Name>WattApp.data</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

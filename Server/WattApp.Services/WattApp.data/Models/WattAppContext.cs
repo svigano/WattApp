@@ -4,7 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
-namespace WattApp.Services.Models
+namespace WattApp.data.Models
 {
     public class WattAppContext : DbContext
     {
@@ -14,12 +14,13 @@ namespace WattApp.Services.Models
         // automatically whenever you change your model schema, please use data migrations.
         // For more information refer to the documentation:
         // http://msdn.microsoft.com/en-us/data/jj591621.aspx
-    
-        public WattAppContext() : base("name=WattAppContext")
+
+        public WattAppContext()
+            : base("name=WattAppContext")
         {
         }
 
-        public System.Data.Entity.DbSet<WattApp.Services.Models.Customer> Customers { get; set; }
-    
+        public System.Data.Entity.DbSet<WattApp.data.Models.Customer> Customers { get; set; }
+        public System.Data.Entity.DbSet<WattApp.data.Models.Equipment> Equipment { get; set; }
     }
 }

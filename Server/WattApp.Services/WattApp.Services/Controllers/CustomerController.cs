@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using WattApp.Services.Models;
+using WattApp.data.Models;
 
 namespace WattApp.Services.Controllers
 {
@@ -18,7 +18,7 @@ namespace WattApp.Services.Controllers
 
         // GET api/Customer
         public IQueryable<Customer> GetCustomers()
-        {
+        {   
             return db.Customers;
         }
 

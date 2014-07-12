@@ -9,6 +9,7 @@ using System.Net;
 using System.Text;
 using Flurl;
 using System.Threading;
+using System.Diagnostics;
 
 namespace WattApp.WebJobs
 {
@@ -20,18 +21,24 @@ namespace WattApp.WebJobs
 
         static void Main(string[] args)
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             try
             {
                 _initClientAPI();
-                Token token = _tokenProvider.Get();
-                IEnumerable<Company> companies = HttpHelper.Get<Company[]>(_baseAPIRoot.AppendPathSegment("companies").ToString(), token);
-                _logger.Info("Number of Companies: " + companies.Count());
+                EquipmentManager equipmentManager = new EquipmentManager(_tokenProvider, _baseAPIRoot);
+                Company company = new Company() { Id = "oX4zlTwmJkaT3NOplmp_-g", Name = "SJMMC" };
+                equipmentManager.DiscoverEletricMetersData(company);
             }
             catch (Exception e)
             {
-                _logger.Error("Unhandle Exception", e);
+                _logger.Error("WebJob -> Unhandle Exception ", e);
             }
+            _logger.Info(string.Format("WebJob executed in (ms)", stopWatch.ElapsedMilliseconds));
+
             Thread.Sleep(1000);
+            // Token token = _tokenProvider.Get();
+            // IEnumerable<Company> companies = HttpHelper.Get<Company[]>(_baseAPIRoot.AppendPathSegment("companies").ToString(), token);
         }
 
         private static void _initClientAPI()
