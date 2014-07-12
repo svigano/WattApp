@@ -6,20 +6,22 @@ angular.module('wattapp.rest-services', ['ngResource'])
         // but it makes this service more flexible and plug-and-play. For example, you can now easily replace this
         // service with a JSON service that gets its data from a remote server without having to changes anything
         // in the modules invoking the data service since the api is already async.
+        var baseAPIRoot = "http://wattappbackend.azurewebsites.net/api"
+        
+        // Real data
+        // /customer/7iULAhT9vUuLr9A8r2Eb5g/dashboard
 
         return {
             findAll: function() {
                 // Remark -> $resource return an promise....
-                var meters = $resource('http://wattappapi.azurewebsites.net/api/mockmeters').query();
-                console.log("Requesting api/mockmeters");
+                var endpoint = baseAPIRoot +'/mockmeters';
+                var meters = $resource(endpoint).query();
                 return meters;
             },
 
             findById: function(meterId) {
                 console.log("Request meter detail");
-                var meter = $resource('http://wattappapi.azurewebsites.net/api/mockmeters/:Id').get({Id:1});
-                console.log("Requesting api/mockmeters/ " + meterId);
-                console.log("selected meter " + meter);
+                var meter = $resource(baseAPIRoot+'/mockmeters/:Id').get({Id:1});
                 return meter;
             },
 
@@ -38,6 +40,8 @@ angular.module('wattapp.rest-services', ['ngResource'])
 
 
     .factory('MeterHistoryService', function($http, $q) {
+
+        var baseAPIRoot = "http://wattappbackend.azurewebsites.net/api"
 
         var convertToDatetime = function(data, headers){
             var data = JSON.parse(data);
@@ -62,7 +66,7 @@ angular.module('wattapp.rest-services', ['ngResource'])
         return {
                 getDemandTodayVsYesterday: function(meterId) {
                     var def = $.Deferred();
-                    $http({ method: 'GET', url: 'http://wattappapi.azurewebsites.net/api/MockMeterHistory', transformResponse: convertToDatetime }).success(function (data) {
+                    $http({ method: 'GET', url: baseAPIRoot+'/MockMeterHistory', transformResponse: convertToDatetime }).success(function (data) {
                     def.resolve(data);
                     console.log(data);
                   });
@@ -71,7 +75,7 @@ angular.module('wattapp.rest-services', ['ngResource'])
 
                 getLastWeekConsumption: function(meterId) {
                     var def = $.Deferred();
-                    $http({ method: 'GET', url: 'http://wattappapi.azurewebsites.net/api/consumption', transformResponse: convertToDay }).success(function (data) {
+                    $http({ method: 'GET', url: baseAPIRoot+'/consumption', transformResponse: convertToDay }).success(function (data) {
                     def.resolve(data);
                     console.log(data);
                   });
