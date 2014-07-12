@@ -27,7 +27,6 @@ namespace WattApp.data.Models
             };
             equip.ForEach(s => context.Equipment.Add(s));
             context.SaveChanges();
-
         }
 
     }

@@ -41,5 +41,6 @@ namespace WattApp.data.Migrations
             DropTable("dbo.Equipments");
             DropTable("dbo.Customers");
         }
+    
     }
 }

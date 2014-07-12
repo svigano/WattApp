@@ -10,7 +10,7 @@ namespace WattApp.data.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(WattApp.data.Models.WattAppContext context)
@@ -27,7 +27,7 @@ namespace WattApp.data.Migrations
               new Customer { Id = 3, Name = "Green Company", Guid = "7iULAhT9vUuLr9A8r2Eb5g" }
             );
 
-            Customer GreenCompany = context.Customers.Single(c => c.Id == 3);
+            Customer GreenCompany = new Customer { Id = 3, Name = "Green Company", Guid = "7iULAhT9vUuLr9A8r2Eb5g" };
 
             context.Equipment.AddOrUpdate(
               p => p.Name,
