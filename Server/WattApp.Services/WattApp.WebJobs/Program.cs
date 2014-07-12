@@ -29,6 +29,7 @@ namespace WattApp.WebJobs
                 EquipmentManager equipmentManager = new EquipmentManager(_tokenProvider, _baseAPIRoot);
                 Company company = new Company() { Id = "oX4zlTwmJkaT3NOplmp_-g", Name = "SJMMC" };
                 equipmentManager.DiscoverEletricMetersData(company);
+                equipmentManager.PullTimeSeriesData();
             }
             catch (Exception e)
             {
@@ -36,6 +37,7 @@ namespace WattApp.WebJobs
             }
             _logger.Info(string.Format("WebJob executed in (ms)", stopWatch.ElapsedMilliseconds));
 
+            Console.WriteLine("Napping");
             Thread.Sleep(1000);
             // Token token = _tokenProvider.Get();
             // IEnumerable<Company> companies = HttpHelper.Get<Company[]>(_baseAPIRoot.AppendPathSegment("companies").ToString(), token);

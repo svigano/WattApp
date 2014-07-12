@@ -22,5 +22,7 @@ namespace WattApp.data.Models
 
         public System.Data.Entity.DbSet<WattApp.data.Models.Customer> Customers { get; set; }
         public System.Data.Entity.DbSet<WattApp.data.Models.Equipment> Equipment { get; set; }
+        public System.Data.Entity.DbSet<WattApp.data.Models.Point> Points { get; set; }
+        public System.Data.Entity.DbSet<WattApp.data.Models.Sample> Samples { get; set; }
     }
 }

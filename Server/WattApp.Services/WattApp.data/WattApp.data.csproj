@@ -46,25 +46,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\201407120425253_t1.cs" />
-    <Compile Include="Migrations\201407120425253_t1.Designer.cs">
-      <DependentUpon>201407120425253_t1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Sample.cs" />
     <Compile Include="Models\WattAppInitializer.cs" />
     <Compile Include="Models\Equipment.cs" />
     <Compile Include="Models\WattAppContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\DataRepository.cs" />
+    <Compile Include="Repositories\IDataRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201407120425253_t1.resx">
-      <DependentUpon>201407120425253_t1.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
