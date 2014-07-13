@@ -28,9 +28,25 @@ namespace WattApp.WebJobs.API
                 _endTime = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                 _interval = "Auto"
             }).ToString();
+            return _executeGetRequest(url, company);
+        }
+
+        public IEnumerable<Sample> GetSamples(string ptId, DateTime startDate, Company company)
+        {
+            var url = apiBaseUrl.AppendPathSegment("building/points").AppendPathSegment(ptId).AppendPathSegment("Samples").SetQueryParams(new
+            {
+                _startTime = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                _interval = "Auto"
+            }).ToString();
+
+            return _executeGetRequest(url, company);
+        }
+
+        private IEnumerable<Sample> _executeGetRequest(string url, Company company)
+        {
             Console.WriteLine(string.Format("request url -> {0}", url));
             var resp = HttpHelper.Get<Page<Sample>>(company, url, tokens);
-            return (resp == null || resp.Items == null) ? new List<Sample>() : resp.Items;            
+            return (resp == null || resp.Items == null) ? new List<Sample>() : resp.Items;
         }
 
     }

@@ -27,6 +27,15 @@ namespace WattApp.data.Repositories
             return _ctxDb.Equipment.SelectMany(c => c.Points).Where(o => o.id == equiId);
         }
 
+        public Sample GetLastSampleByPoint(int pointID)
+        {
+            var lastSample = from n in _ctxDb.Samples
+                            where n.Point.id == pointID
+                            group n by n.Point.id into g
+                            select g.OrderByDescending(t=>t.TimeStamp).FirstOrDefault();
+
+            return lastSample.FirstOrDefault();
+        }
 
         public bool Insert(IEnumerable<Sample> list) 
         {

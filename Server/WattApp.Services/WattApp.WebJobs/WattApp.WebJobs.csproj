@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\SampleClient.cs" />
-    <Compile Include="EquipmentManager.cs" />
+    <Compile Include="TimeSeriesManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

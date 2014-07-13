@@ -23,9 +23,9 @@ namespace WattApp.data.Migrations
             //
 
             context.Customers.AddOrUpdate(
-  p => p.Name,
-  new Customer { Name = "ACME Red", Guid = "123", Enabled = false }
-);
+              p => p.Name,
+              new Customer { Name = "ACME Red", Guid = "123", Enabled = false }
+            );
 
             Customer GreenCompany = new Customer { Name = "Green Company", Guid = "7iULAhT9vUuLr9A8r2Eb5g", Enabled = true };
             Customer JCI = new Customer { Name = "JCI", Guid = "123", Enabled = false };
@@ -39,9 +39,9 @@ namespace WattApp.data.Migrations
                 new Equipment { Name = "Electric Meter", Type = "EletricMeter", Location = "Corporate Building", PxGuid = "OFSM3USrzkST1vxFUruang", Customer = GreenCompany, Points = new List<Point> { pt2 } }
             );
 
-            context.Samples.Add(
-                new Sample { Point = pt1, TimeStamp = DateTime.Now, Value = 230 }
-            );
+            //context.Samples.Add(
+            //    new Sample { Point = pt1, TimeStamp = DateTime.Now, Value = 230 }
+            //);
 
         }
     }

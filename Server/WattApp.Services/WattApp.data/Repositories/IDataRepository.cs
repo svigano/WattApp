@@ -9,10 +9,14 @@ namespace WattApp.data.Repositories
 {
     public interface IDataRepository
     {
+        // Customers
+
         // Equipment
         IQueryable<Point> GetAllPointsByEquipment(int equiId);
 
         // Samples
+        Sample GetLastSampleByPoint(int pointID);
+
         bool Insert(IEnumerable<Sample> list);
     }
 }

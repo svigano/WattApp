@@ -26,21 +26,17 @@ namespace WattApp.WebJobs
             try
             {
                 _initClientAPI();
-                EquipmentManager equipmentManager = new EquipmentManager(_tokenProvider, _baseAPIRoot);
-                Company company = new Company() { Id = "oX4zlTwmJkaT3NOplmp_-g", Name = "SJMMC" };
-                equipmentManager.DiscoverEletricMetersData(company);
-                equipmentManager.PullTimeSeriesData();
+                TimeSeriesManager timeseriesManager = new TimeSeriesManager(_tokenProvider, _baseAPIRoot);
+                _logger.Info("****PullTimeSeriesTask****");
+                timeseriesManager.PullTimeSeriesTask();
             }
             catch (Exception e)
             {
                 _logger.Error("WebJob -> Unhandle Exception ", e);
             }
-            _logger.Info(string.Format("WebJob executed in (ms)", stopWatch.ElapsedMilliseconds));
+            _logger.Info(string.Format("WebJob executed in (ms) {0}", stopWatch.ElapsedMilliseconds));
 
-            Console.WriteLine("Napping");
             Thread.Sleep(1000);
-            // Token token = _tokenProvider.Get();
-            // IEnumerable<Company> companies = HttpHelper.Get<Company[]>(_baseAPIRoot.AppendPathSegment("companies").ToString(), token);
         }
 
         private static void _initClientAPI()
