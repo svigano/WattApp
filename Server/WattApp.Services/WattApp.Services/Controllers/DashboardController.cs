@@ -28,7 +28,7 @@ namespace WattApp.Services.Controllers
         {
             var dashboarditems = new List<DashboardItemModel>();
             var ditem = new DashboardItemModel();
-            var equipment = _db.Equipment.ToList();
+            var equipment = _db.Equipment.Where(e => e.Customer.Guid == customerGuid).ToList();
             foreach (var meter in equipment)
                 dashboarditems.Add(_mapEquipmentToDashboardItem(meter));
 
@@ -63,7 +63,7 @@ namespace WattApp.Services.Controllers
         private DashboardItemModel _mapEquipmentToDashboardItem(Equipment meter)
         {
             Random r = new Random();
-            return new DashboardItemModel { Id = meter.id, Name = meter.Name, Location = meter.Location, Demand = Math.Round(r.NextDouble() * 100, 2), Inc = Math.Round((r.NextDouble() * 2.0 - 1.0),2) * 10 };
+            return new DashboardItemModel { Id = meter.id, Name = meter.Name, Location = meter.Location, Demand = Math.Round(r.NextDouble() * 100, 2), Inc = Math.Round((r.NextDouble() * 2.0 - 1.0) * 10, 2) };
         }
     }
 }
