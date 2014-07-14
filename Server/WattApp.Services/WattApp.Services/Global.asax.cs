@@ -15,9 +15,8 @@ namespace WattApp.Services
     {
         protected void Application_Start()
         {
-            //Database.SetInitializer<WattAppContext>(null);
-            //WattAppContext c = new WattAppContext();
-            
+            Database.SetInitializer<WattAppContext>(null);
+
             GlobalConfiguration.Configuration.Filters.Add(new TrackTimeFilter());
             GlobalConfiguration.Configure(WebApiConfig.Register);
             GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();

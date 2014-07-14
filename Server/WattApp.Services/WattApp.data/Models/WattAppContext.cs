@@ -18,10 +18,10 @@ namespace WattApp.data.Models
         public WattAppContext()
             : base("name=WattAppContext")
         {
-            Database.SetInitializer<WattAppContext>(new DropCreateDatabaseIfModelChanges<WattAppContext>());
+           // Database.SetInitializer<WattAppContext>(new DropCreateDatabaseIfModelChanges<WattAppContext>());
 
             // To Enable to go Live
-            // Database.SetInitializer<WattAppContext>(null);
+             Database.SetInitializer<WattAppContext>(null);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

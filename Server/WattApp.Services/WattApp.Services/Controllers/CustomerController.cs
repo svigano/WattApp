@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WattApp.data.Models;
+using WattApp.Services.Models;
 
 namespace WattApp.Services.Controllers
 {
@@ -17,87 +18,29 @@ namespace WattApp.Services.Controllers
         private WattAppContext db = new WattAppContext();
 
         // GET api/Customer
-        public IQueryable<Customer> GetCustomers()
-        {   
-            return db.Customers;
+        public IQueryable<CustomerModel> GetCustomers()
+        {
+            var r = db.Customers;
+            List<CustomerModel> customers = new List<CustomerModel>();
+
+            foreach (var item in r)
+                customers.Add(new CustomerModel { Id = item.Id, Name = item.Name, Guid = item.Guid, Enabled = item.Enabled});
+
+            Console.WriteLine(r.Count());
+            return customers.AsQueryable<CustomerModel>();
         }
 
         // GET api/Customer/5
-        [ResponseType(typeof(Customer))]
+        [ResponseType(typeof(CustomerModel))]
         public IHttpActionResult GetCustomer(int id)
         {
-            Customer customer = db.Customers.Find(id);
-            if (customer == null)
+            Customer item = db.Customers.Find(id);
+            if (item == null)
             {
                 return NotFound();
             }
 
-            return Ok(customer);
-        }
-
-        // PUT api/Customer/5
-        public IHttpActionResult PutCustomer(int id, Customer customer)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != customer.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(customer).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        // POST api/Customer
-        [ResponseType(typeof(Customer))]
-        public IHttpActionResult PostCustomer(Customer customer)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Customers.Add(customer);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = customer.Id }, customer);
-        }
-
-        // DELETE api/Customer/5
-        [ResponseType(typeof(Customer))]
-        public IHttpActionResult DeleteCustomer(int id)
-        {
-            Customer customer = db.Customers.Find(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            db.Customers.Remove(customer);
-            db.SaveChanges();
-
-            return Ok(customer);
+            return Ok(new CustomerModel { Id = item.Id, Name = item.Name, Guid = item.Guid, Enabled = item.Enabled });
         }
 
         protected override void Dispose(bool disposing)
