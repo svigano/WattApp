@@ -24,7 +24,7 @@ namespace WattApp.data.Repositories
 
         public IQueryable<Point> GetAllPointsByEquipment(int equiId)
         { 
-            return _ctxDb.Equipment.SelectMany(c => c.Points).Where(o => o.id == equiId);
+            return _ctxDb.Equipment.SelectMany(c => c.PointsList).Where(o => o.id == equiId);
         }
 
         public Sample GetLastSampleByPoint(int pointID)

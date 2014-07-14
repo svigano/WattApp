@@ -61,8 +61,8 @@ namespace WattApp.WebJobs
 
             foreach (var equip in eqList)
             {
-                _logger.Debug("Equipment {0} # of Points {1}", equip.Name, equip.Points.Count());
-                foreach (var item in equip.Points)
+                _logger.Debug("Equipment {0} # of Points {1}", equip.Name, equip.PointsList.Count());
+                foreach (var item in equip.PointsList)
                 {
                     DateTime startTime = DateTime.UtcNow.Subtract(TimeSpan.FromHours(DEFAULT_BACKFILL_TIME_HOURS));
                     DateTime endTime = DateTime.UtcNow;

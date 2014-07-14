@@ -11,6 +11,7 @@ namespace WattApp.data.Models
         public int id { get; set; }
         public DateTime TimeStamp { get; set; }
         public double Value { get; set; }
-        public Point Point {get;set;}
+        public int PointId { get; set; }
+        public virtual Point Point { get; set; }
     }
 }

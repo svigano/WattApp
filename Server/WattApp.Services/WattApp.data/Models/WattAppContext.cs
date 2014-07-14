@@ -18,6 +18,28 @@ namespace WattApp.data.Models
         public WattAppContext()
             : base("name=WattAppContext")
         {
+            Database.SetInitializer<WattAppContext>(new DropCreateDatabaseIfModelChanges<WattAppContext>());
+
+            // To Enable to go Live
+            // Database.SetInitializer<WattAppContext>(null);
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            // one-to-many
+            // Customer -> Equipment
+            modelBuilder.Entity<Customer>().HasMany<Equipment>(s => s.EquipmentList)
+            .WithRequired(s => s.Customer).HasForeignKey(s => s.CustomerId);
+
+            // one-to-many
+            // Equipment -> Point
+            modelBuilder.Entity<Equipment>().HasMany<Point>(s => s.PointsList)
+            .WithRequired(s => s.Equipment).HasForeignKey(s => s.EquipmentId);
+
+            // one-to-many
+            // Point -> Sample
+            modelBuilder.Entity<Point>().HasMany<Sample>(s => s.SamplesList)
+            .WithRequired(s => s.Point).HasForeignKey(s => s.PointId);
         }
 
         public System.Data.Entity.DbSet<WattApp.data.Models.Customer> Customers { get; set; }

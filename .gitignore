@@ -215,3 +215,5 @@ $RECYCLE.BIN/
 
 
 secret_No_git
+Server/WattApp.Services/WattApp.Services/App_Data/WattAppDBLocalDev_log.ldf
+Server/WattApp.Services/WattApp.Services/App_Data/WattAppDBLocalDev.mdf
