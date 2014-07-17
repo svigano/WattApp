@@ -83,7 +83,7 @@ namespace WattApp.WebJobs
             catch (Exception e)
             {
                 _logger.Error("PullTimeSeriesTask->Unhandle Exception ", e);
-                Console.WriteLine("WebJob -> Unhandle Exception " + e.Message);
+                Trace.WriteLine("WebJob -> Unhandle Exception " + e.Message);
             }
             _logger.Info(string.Format("PullTimeSeriesTask executed in (ms) {0}", _stopWatch.ElapsedMilliseconds));
         }
@@ -115,7 +115,7 @@ namespace WattApp.WebJobs
                                 var yesterdaySample = _dataRep.GetSamplesByPoint(equip.PointsList.First().id, lastSample.TimeStamp.Subtract(TimeSpan.FromHours(24)));
                                 if (yesterdaySample != null)
                                 {
-                                    var delta = lastSample.Value - yesterdaySample.Value;
+                                    var delta = Math.Round(lastSample.Value - yesterdaySample.Value,2);
                                     _logger.Debug(string.Format("Latest lastSample time {0} val: {1} closest 24h past lastSample time {2} val {3} delta {4}",
                                                   lastSample.TimeStamp, lastSample.Value, yesterdaySample.TimeStamp, yesterdaySample.Value, delta));
                                     equip.DeltaDemand = delta;
@@ -133,7 +133,7 @@ namespace WattApp.WebJobs
             catch (Exception e)
             {
                 _logger.Error("ExecuteRollupAndUpdatesTask->Unhandle Exception ", e);
-                Console.WriteLine("WebJob -> Unhandle Exception " + e.Message);
+                Trace.WriteLine("WebJob -> Unhandle Exception " + e.Message);
             }
             _logger.Info(string.Format("The task has updated {0} equipment", numOfUpdatedEquipment));
             _logger.Info(string.Format("ExecuteRollupAndUpdatesTask executed in (ms) {0}", _stopWatch.ElapsedMilliseconds));

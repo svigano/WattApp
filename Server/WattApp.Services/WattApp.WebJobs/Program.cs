@@ -35,11 +35,12 @@ namespace WattApp.WebJobs
             catch (Exception e)
             {
                 _logger.Error("WebJob -> Unhandle Exception ", e);
-                Console.WriteLine("WebJob -> Unhandle Exception " + e.Message);
+                Trace.WriteLine("WebJob -> Unhandle Exception " + e.Message);
             }
-            _logger.Info(string.Format("WebJob executed in (ms) {0}", stopWatch.ElapsedMilliseconds));
-
-            Thread.Sleep(1000);
+            string str = string.Format("WebJob executed in (ms) {0}", stopWatch.ElapsedMilliseconds);
+            _logger.Info(str);
+            Trace.WriteLine(str);
+            Thread.Sleep(2000);
         }
 
         private static void _initClientAPI()
