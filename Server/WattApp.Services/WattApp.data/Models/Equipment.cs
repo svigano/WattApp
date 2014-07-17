@@ -11,6 +11,9 @@ namespace WattApp.data.Models
         public Equipment()
         {
             PointsList = new List<Point>();
+            DeltaDemand =0;
+            LastDemand = 0;
+            LastUpdateTime = new DateTime(1900,1,1);
         }
         public int id { get; set; }
         public string Name { get; set; }
@@ -18,6 +21,9 @@ namespace WattApp.data.Models
         public string Location { get; set; }
         public string PxGuid { get; set; }
         public int CustomerId { get; set; }
+        public double LastDemand { get; set; }
+        public double DeltaDemand { get; set; }
+        public DateTime LastUpdateTime { get; set; }
         public virtual Customer Customer { get; set; }
         public virtual IList<Point> PointsList {get; set;}
     }

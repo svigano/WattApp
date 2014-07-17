@@ -8,7 +8,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Web.Routing;
 
-namespace WattApp.Services.Filter
+namespace WattApp.api.Filter
 {
     public class TrackTimeFilter : ActionFilterAttribute
     {

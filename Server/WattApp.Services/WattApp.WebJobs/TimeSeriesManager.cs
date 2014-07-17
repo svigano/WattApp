@@ -3,6 +3,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,30 +16,61 @@ namespace WattApp.WebJobs
     internal class TimeSeriesManager
     {
         private const string kEletricMeter = "EletricMeter";
-        private const int DEFAULT_BACKFILL_TIME_HOURS = 48;
+        private const int DEFAULT_BACKFILL_TIME_HOURS = 64;
 
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static Logger _logger;
         private string _baseAPIRoot = string.Empty;
         private ITokenProvider _tokenProvider;
         private EquipmentClient _equipmentClient;
         private SampleClient _sampleClient;
-        private WattAppContext _wattAppDB = new WattAppContext();
         private IDataRepository _dataRep = null;
+        private Stopwatch _stopWatch = new Stopwatch();
 
-        public TimeSeriesManager(ITokenProvider provider, string baseRootAPI)
+        public TimeSeriesManager(Logger logger, ITokenProvider provider, string baseRootAPI)
         {
+            _logger = logger;
             _tokenProvider = provider;
             _baseAPIRoot = baseRootAPI;
             _equipmentClient = new EquipmentClient(_tokenProvider, _baseAPIRoot);
             _sampleClient = new SampleClient(_tokenProvider, _baseAPIRoot);
-            _dataRep = new DataRepository(_wattAppDB);
+            _dataRep = new DataRepository(new WattAppContext());
         }
 
-        public void PullTimeSeriesTask()
+        // TO DO
+        // To be refactor in the ?? DataRepository ??
+        public Dictionary<string, List<data.Models.Equipment>> FindEnabledEquipment()
         {
+            List<data.Models.Equipment> equipList = new List<data.Models.Equipment>();
+            var map = new Dictionary<string, List<WattApp.data.Models.Equipment>>();
+
+            var q =
+                    from c in _dataRep.Equipment
+                    join p in _dataRep.Customers on c.Customer equals p
+                    where c.Customer.Enabled == true
+                    select new { Equipment = c, CustomerGuid = p.Guid };
+
+
+            foreach (var item in q)
+            {
+                if (!map.ContainsKey(item.CustomerGuid))
+                {
+                    var l = new List<data.Models.Equipment>();
+                    l.Add(item.Equipment);
+                    map.Add(item.CustomerGuid, l);
+                }
+                else
+                    map[item.CustomerGuid].Add(item.Equipment);
+            }
+
+            return map;
+        }
+
+        public void PullTimeSeriesTask(Dictionary<string, List<data.Models.Equipment>> map)
+        {
+            _logger.Info("****PullTimeSeriesTask****");
+            _stopWatch.Restart();
             try
             {
-                var map = _findEnabledEquipment();
                 if (map.Keys.Count == 0)
                     _logger.Info("No Customer/Equipment enabled");
                 foreach (var key in map.Keys)
@@ -51,8 +83,60 @@ namespace WattApp.WebJobs
             catch (Exception e)
             {
                 _logger.Error("PullTimeSeriesTask->Unhandle Exception ", e);
+                Console.WriteLine("WebJob -> Unhandle Exception " + e.Message);
             }
+            _logger.Info(string.Format("PullTimeSeriesTask executed in (ms) {0}", _stopWatch.ElapsedMilliseconds));
+        }
 
+        public void ExecuteRollupAndUpdatesTask(Dictionary<string, List<data.Models.Equipment>> map) 
+        {
+            _logger.Info("****ExecuteRollupAndUpdatesTask****");
+            var numOfUpdatedEquipment = 0;
+            _stopWatch.Restart();
+            try
+            {
+                // Update All the equipment last value demand and calculate the new deltademand value
+                foreach (var key in map.Keys)
+                {
+                    foreach (var equip in map[key])
+                    {
+                        if (equip.PointsList.Count() > 0)
+                        {
+                            var lastSample = _dataRep.GetLastSampleByPoint(equip.PointsList.First().id);
+
+                            // New data, update demand and delta demand
+                            if (lastSample.TimeStamp > equip.LastUpdateTime)
+                            {
+                                equip.LastUpdateTime = lastSample.TimeStamp;
+                                equip.LastDemand = lastSample.Value;
+                                equip.DeltaDemand = 0; // Assume not find the previous 24h sample
+                                // get closest lastSample in the previous 24h
+                                // TO DO set a tollerance 1h ??
+                                var yesterdaySample = _dataRep.GetSamplesByPoint(equip.PointsList.First().id, lastSample.TimeStamp.Subtract(TimeSpan.FromHours(24)));
+                                if (yesterdaySample != null)
+                                {
+                                    var delta = lastSample.Value - yesterdaySample.Value;
+                                    _logger.Debug(string.Format("Latest lastSample time {0} val: {1} closest 24h past lastSample time {2} val {3} delta {4}",
+                                                  lastSample.TimeStamp, lastSample.Value, yesterdaySample.TimeStamp, yesterdaySample.Value, delta));
+                                    equip.DeltaDemand = delta;
+                                }
+                                else
+                                    _logger.Debug(string.Format("Latest lastSample time {0} val: {1} closest 24h past lastSample time not found",
+                                                  lastSample.TimeStamp, lastSample.Value));
+                                _dataRep.Update(equip);
+                                numOfUpdatedEquipment++;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error("ExecuteRollupAndUpdatesTask->Unhandle Exception ", e);
+                Console.WriteLine("WebJob -> Unhandle Exception " + e.Message);
+            }
+            _logger.Info(string.Format("The task has updated {0} equipment", numOfUpdatedEquipment));
+            _logger.Info(string.Format("ExecuteRollupAndUpdatesTask executed in (ms) {0}", _stopWatch.ElapsedMilliseconds));
         }
 
         private void _pullTimeSeriesDataByCustomer(Company c, IList<data.Models.Equipment> eqList)
@@ -67,7 +151,7 @@ namespace WattApp.WebJobs
                     DateTime startTime = DateTime.UtcNow.Subtract(TimeSpan.FromHours(DEFAULT_BACKFILL_TIME_HOURS));
                     DateTime endTime = DateTime.UtcNow;
 
-                    // Check the latest sample available in wattapp system
+                    // Check the latest lastSample available in wattapp system
                     var wlatestSample = _dataRep.GetLastSampleByPoint(item.id);
                     // New point, let's bring back the default backfill data
                     if (wlatestSample == null)
@@ -107,43 +191,6 @@ namespace WattApp.WebJobs
                 wsamples.Add(new data.Models.Sample { Point = pt, Value = Math.Round(item.Value,2), TimeStamp = item.Timestamp });   
 
             return wsamples;
-        }
-
-        // TO DO
-        // To be refactor in the ?? DataRepository ??
-        private Dictionary<string, List<data.Models.Equipment>> _findEnabledEquipment()
-        {
-            List<data.Models.Equipment> equipList = new List<data.Models.Equipment>();
-            var map = new Dictionary<string, List<WattApp.data.Models.Equipment>>();
-
-            var q =
-                    from c in _wattAppDB.Equipment
-                    join p in _wattAppDB.Customers on c.Customer equals p
-                    where c.Customer.Enabled == true
-                    select new { Equipment = c, CustomerGuid = p.Guid };
-
-
-            foreach (var item in q)
-            {
-                if (!map.ContainsKey(item.CustomerGuid))
-                {
-                    var l = new List<data.Models.Equipment>();
-                    l.Add(item.Equipment);
-                    map.Add(item.CustomerGuid, l);
-                }
-                else
-                    map[item.CustomerGuid].Add(item.Equipment);
-            }
-
-            //var activeCustomers = _wattAppDB.Customers.Where(c => c.Enabled == true).ToList();
-            //foreach (var item in activeCustomers)
-            //{
-            //    var l = new List<data.Models.Equipment>();
-            //    var equip = (_wattAppDB.Equipment.Where(e => e.Customer.Id == item.Id) as ObjectQuery<WattApp.data.Models.Equipment>).Include("Points");
-            //    l.AddRange(equip);
-            //    map.Add(item.Guid, l);
-            //}
-            return map;
         }
     }
 }

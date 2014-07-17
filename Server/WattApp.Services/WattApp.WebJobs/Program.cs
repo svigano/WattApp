@@ -26,13 +26,16 @@ namespace WattApp.WebJobs
             try
             {
                 _initClientAPI();
-                TimeSeriesManager timeseriesManager = new TimeSeriesManager(_tokenProvider, _baseAPIRoot);
-                _logger.Info("****PullTimeSeriesTask****");
-                timeseriesManager.PullTimeSeriesTask();
+
+                TimeSeriesManager timeseriesManager = new TimeSeriesManager(_logger, _tokenProvider, _baseAPIRoot);
+                var enabledEquipmentByCustomerMap = timeseriesManager.FindEnabledEquipment();
+                timeseriesManager.PullTimeSeriesTask(enabledEquipmentByCustomerMap);
+                timeseriesManager.ExecuteRollupAndUpdatesTask(enabledEquipmentByCustomerMap);
             }
             catch (Exception e)
             {
                 _logger.Error("WebJob -> Unhandle Exception ", e);
+                Console.WriteLine("WebJob -> Unhandle Exception " + e.Message);
             }
             _logger.Info(string.Format("WebJob executed in (ms) {0}", stopWatch.ElapsedMilliseconds));
 
@@ -78,14 +81,14 @@ namespace WattApp.WebJobs
             var settingValue = GetSettingFromFile(settingKey) ?? defaultValueIfNotFound;
             if (!validityCheck(settingValue) && !string.IsNullOrEmpty(warningMessageIfCheckFails))
             {
-                Log.Warn(warningMessageIfCheckFails);
+                _logger.Warn(warningMessageIfCheckFails);
             }
             return settingValue;
         }
 
         private delegate string GetSettingDelegate(string key);
         private static readonly GetSettingDelegate GetSettingFromFile = CloudConfigurationManager.GetSetting;
-        private static readonly Logger Log = LogManager.GetLogger("Jci.Panoptix.HistoricalCollector.ConfigSettings");
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
     }
 
 }

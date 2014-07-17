@@ -6,10 +6,9 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Routing;
 using WattApp.data.Models;
-//using WattApp.Services.App_Start;
-using WattApp.Services.Filter;
+using WattApp.api.Filter;
 
-namespace WattApp.Services
+namespace WattApp.api
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

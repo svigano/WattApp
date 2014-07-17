@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace WattApp.Services.Controllers
+namespace WattApp.api.Controllers
 {
     public class Meter 
     {

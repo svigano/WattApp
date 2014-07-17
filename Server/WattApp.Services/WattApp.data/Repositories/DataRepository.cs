@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,11 +24,23 @@ namespace WattApp.data.Repositories
             _ctxDb = c;
         }
 
+        public IDbSet<Customer> Customers { get { return _ctxDb.Customers; } }
+        public IDbSet<Equipment> Equipment { get { return _ctxDb.Equipment; } }
+
+        public void Update(Equipment e)
+        { 
+            _ctxDb.Entry(e).State = EntityState.Modified;
+            _ctxDb.SaveChanges();
+        }
+
+
         public IQueryable<Point> GetAllPointsByEquipment(int equiId)
         { 
             return _ctxDb.Equipment.SelectMany(c => c.PointsList).Where(o => o.id == equiId);
         }
+        public IDbSet<Point> Points { get { return _ctxDb.Points; } }
 
+        public IDbSet<Sample> Samples { get { return _ctxDb.Samples; } }
         public Sample GetLastSampleByPoint(int pointID)
         {
             var lastSample = from n in _ctxDb.Samples
@@ -36,11 +50,22 @@ namespace WattApp.data.Repositories
 
             return lastSample.FirstOrDefault();
         }
+        public Sample GetSamplesByPoint(int pointID, DateTime startTime)
+        {
+            //var lastSample = from n in _ctxDb.Samples
+            //                 where n.Point.id == pointID && n.TimeStamp >= startTime && n.TimeStamp <= endTime
+            //                 select n;
+
+            var selected = _ctxDb.Samples.Where(n => n.Point.id == pointID)
+                           .OrderBy(n => Math.Abs(System.Data.Entity.DbFunctions.DiffSeconds(startTime, n.TimeStamp).Value));
+
+            return selected.FirstOrDefault();
+        }
 
         public bool Insert(IEnumerable<Sample> list) 
         {
             var done = true;
-
+            var mylist = new List<Sample>(list);
             _ctxDb.Samples.AddRange(list);
             _ctxDb.SaveChanges();
 

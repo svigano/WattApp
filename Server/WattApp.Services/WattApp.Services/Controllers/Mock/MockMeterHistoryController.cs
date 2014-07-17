@@ -5,14 +5,13 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace WattApp.Services.Controllers
+namespace WattApp.api.Controllers
 {
     public class DoubleReading
     {
         public DateTime t { get; set; }
-        public int val1 { get; set; }
-        public int val2 { get; set; }
-
+        public double val1 { get; set; }
+        public double val2 { get; set; }
     }
 
     public class DailyConsumption

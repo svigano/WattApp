@@ -9,9 +9,9 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WattApp.data.Models;
-using WattApp.Services.Models;
+using WattApp.api.Models;
 
-namespace WattApp.Services.Controllers
+namespace WattApp.api.Controllers
 {
     public class CustomerController : ApiController
     {

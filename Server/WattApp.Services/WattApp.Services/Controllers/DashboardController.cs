@@ -8,12 +8,12 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using WattApp.Services.Models;
+using WattApp.api.Models;
 using WattApp.data.Models;
 using NLog;
 using System.Diagnostics;
 
-namespace WattApp.Services.Controllers
+namespace WattApp.api.Controllers
 {
     public class DashboardController : ApiController
     {
@@ -63,7 +63,7 @@ namespace WattApp.Services.Controllers
         private DashboardItemModel _mapEquipmentToDashboardItem(Equipment meter)
         {
             Random r = new Random();
-            return new DashboardItemModel { Id = meter.id, Name = meter.Name, Location = meter.Location, Demand = Math.Round(r.NextDouble() * 100, 2), Inc = Math.Round((r.NextDouble() * 2.0 - 1.0) * 10, 2) };
+            return new DashboardItemModel { Id = meter.id, Name = meter.Name, Location = meter.Location, Demand = meter.LastDemand, Inc = meter.DeltaDemand };
         }
     }
 }

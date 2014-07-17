@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
-namespace WattApp.Services
+namespace WattApp.api
 {
     public static class WebApiConfig
     {
