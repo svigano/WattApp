@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\SampleClient.cs" />
+    <Compile Include="ConfigurationCrawler.cs" />
     <Compile Include="TimeSeriesManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -27,6 +27,19 @@ namespace WattApp.WebJobs
             {
                 _initClientAPI();
 
+                // CRAWLER Section
+                var crawler = new ConfigurationCrawler(_logger, _tokenProvider, _baseAPIRoot);
+                
+                // Customers
+                //crawler.DiscoveryAndUpdateCustomersTask();
+
+                // Meters
+                //crawler.DiscoveryAndUpdateMetersTask();
+
+                // Time Series Section
+                // TO DO Refactor: Common assembly + single exe per webjob
+
+                // UNCOMMENT BEFORE DEPLOY WEBJOB
                 TimeSeriesManager timeseriesManager = new TimeSeriesManager(_logger, _tokenProvider, _baseAPIRoot);
                 var enabledEquipmentByCustomerMap = timeseriesManager.FindEnabledEquipment();
                 timeseriesManager.PullTimeSeriesTask(enabledEquipmentByCustomerMap);
@@ -51,7 +64,7 @@ namespace WattApp.WebJobs
                 throw new ArgumentException("JciClientId and/or JciClientSecret is not valid. Add them to the .config file settings section.");
             var tokenEndpoint = Settings.Get("JciTokenEndpoint", "https://identity.johnsoncontrols.com/issue/oauth2/token",
                 s => new Uri(s).IsAbsoluteUri,
-                "JciTokenEndpoint in configuration settings should be the URL where JCI's tokens are issued from.");
+                "JciTokenEndpoint in configuration settings should be the URL where JCI's _tokenProvider are issued from.");
             _baseAPIRoot = Settings.Get("JciBuildingApiEndpoint", "https://api.panoptix.com/building",
                 s => new Uri(s).IsAbsoluteUri,
                 "JciBuildingApiEndpoint in configuration settings should be the base URL of the Building API.");

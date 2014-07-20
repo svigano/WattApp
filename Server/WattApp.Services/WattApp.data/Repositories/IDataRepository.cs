@@ -12,11 +12,14 @@ namespace WattApp.data.Repositories
     {
         // Customers
         IDbSet<Customer> Customers { get; }
+        void Insert(IEnumerable<Customer> list);
+        void Update(Customer c);
 
         // Equipment
         IDbSet<Equipment> Equipment { get; }
-        void Update(Equipment e);
         IQueryable<Point> GetAllPointsByEquipment(int equiId);
+        void Insert(IEnumerable<Equipment> list);
+        void Update(Equipment e);
         
         // Points
         IDbSet<Point> Points { get; }

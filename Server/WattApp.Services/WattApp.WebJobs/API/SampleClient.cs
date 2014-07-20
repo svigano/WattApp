@@ -10,19 +10,19 @@ namespace WattApp.WebJobs.API
 {
     public class SampleClient
     {
-        private readonly string apiBaseUrl;
-        private readonly ITokenProvider tokens;
+        private readonly string _apiBaseUrl;
+        private readonly ITokenProvider _tokenProvider;
         public SampleClient(ITokenProvider tokenProvider, string buildingApiUrl)
         {
-            this.tokens = tokenProvider;
-            this.apiBaseUrl = buildingApiUrl;
+            this._tokenProvider = tokenProvider;
+            this._apiBaseUrl = buildingApiUrl;
         }
 
-        public string APIBaseUrl { get { return apiBaseUrl; } }
+        public string APIBaseUrl { get { return _apiBaseUrl; } }
 
         public IEnumerable<Sample> GetSamples(string ptId, DateTime startDate, DateTime endDate, Company company)
         {
-            var url = apiBaseUrl.AppendPathSegment("building/points").AppendPathSegment(ptId).AppendPathSegment("Samples").SetQueryParams(new
+            var url = _apiBaseUrl.AppendPathSegment("building/points").AppendPathSegment(ptId).AppendPathSegment("Samples").SetQueryParams(new
             {
                 _startTime = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                 _endTime = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
@@ -33,7 +33,7 @@ namespace WattApp.WebJobs.API
 
         public IEnumerable<Sample> GetSamples(string ptId, DateTime startDate, Company company)
         {
-            var url = apiBaseUrl.AppendPathSegment("building/points").AppendPathSegment(ptId).AppendPathSegment("Samples").SetQueryParams(new
+            var url = _apiBaseUrl.AppendPathSegment("building/points").AppendPathSegment(ptId).AppendPathSegment("Samples").SetQueryParams(new
             {
                 _startTime = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                 _interval = "Auto"
@@ -45,7 +45,7 @@ namespace WattApp.WebJobs.API
         private IEnumerable<Sample> _executeGetRequest(string url, Company company)
         {
             Console.WriteLine(string.Format("request url -> {0}", url));
-            var resp = HttpHelper.Get<Page<Sample>>(company, url, tokens);
+            var resp = HttpHelper.Get<Page<Sample>>(company, url, _tokenProvider);
             return (resp == null || resp.Items == null) ? new List<Sample>() : resp.Items;
         }
 

@@ -13,7 +13,7 @@ namespace WattApp.data.Repositories
     {
         // TO DO
         // Add logentries
-        private WattAppContext _ctxDb = null;
+        public WattAppContext _ctxDb = null;
 
         public DataRepository()
         {
@@ -24,8 +24,29 @@ namespace WattApp.data.Repositories
             _ctxDb = c;
         }
 
+        public WattAppContext ctxDb { get { return _ctxDb; } }
+
         public IDbSet<Customer> Customers { get { return _ctxDb.Customers; } }
+
+        public void Update(Customer c)
+        {
+            _ctxDb.Entry(c).State = EntityState.Modified;
+            _ctxDb.SaveChanges();
+        }
+
+        public void Insert(IEnumerable<Customer> list)
+        {
+            _ctxDb.Customers.AddRange(list);
+            _ctxDb.SaveChanges();
+        }
+
         public IDbSet<Equipment> Equipment { get { return _ctxDb.Equipment; } }
+
+        public void Insert(IEnumerable<Equipment> list)
+        {
+            _ctxDb.Equipment.AddRange(list);
+            _ctxDb.SaveChanges();
+        }
 
         public void Update(Equipment e)
         { 

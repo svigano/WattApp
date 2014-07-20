@@ -1,4 +1,5 @@
 ﻿using BuildingApi;
+using Microsoft.WindowsAzure;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -36,8 +37,6 @@ namespace WattApp.WebJobs
             _dataRep = new DataRepository(new WattAppContext());
         }
 
-        // TO DO
-        // To be refactor in the ?? DataRepository ??
         public Dictionary<string, List<data.Models.Equipment>> FindEnabledEquipment()
         {
             List<data.Models.Equipment> equipList = new List<data.Models.Equipment>();
