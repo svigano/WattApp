@@ -8,6 +8,6 @@ namespace BuildingApi
         [JsonProperty(PropertyName = "role")]
         public EntityLink Type { get; set; }
         public EntityLink Owner { get; set; }
-        public EntityLink Point { get; set; }
+        public Point Point { get; set; }
     }
 }

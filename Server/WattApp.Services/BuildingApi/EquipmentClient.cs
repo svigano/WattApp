@@ -21,7 +21,7 @@ namespace BuildingApi
             var url = apiBaseUrl.AppendPathSegment("building/equipment").SetQueryParams(new
             {
                 type = equipmentType,
-                _expand = "pointRoles",
+                _expand = "pointRoles.point",
                 _offset = offset.ToString(CultureInfo.InvariantCulture),
                 _limit = max.ToString(CultureInfo.InvariantCulture)
             }).ToString();
