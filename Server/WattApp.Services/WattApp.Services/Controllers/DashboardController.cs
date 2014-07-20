@@ -28,9 +28,17 @@ namespace WattApp.api.Controllers
         {
             var dashboarditems = new List<DashboardItemModel>();
             var ditem = new DashboardItemModel();
-            var equipment = _db.Equipment.Where(e => e.Customer.Guid == customerGuid).ToList();
-            foreach (var meter in equipment)
-                dashboarditems.Add(_mapEquipmentToDashboardItem(meter));
+
+            // TEMPORARY 
+            // MOCK DATA
+            if (customerGuid == "123mock123")
+                dashboarditems = _mockData();
+            else
+            {
+                var equipment = _db.Equipment.Where(e => e.Customer.Guid == customerGuid).ToList();
+                foreach (var meter in equipment)
+                    dashboarditems.Add(_mapEquipmentToDashboardItem(meter));
+            }
 
             return dashboarditems.AsQueryable<DashboardItemModel>();
         }
@@ -64,6 +72,76 @@ namespace WattApp.api.Controllers
         {
             Random r = new Random();
             return new DashboardItemModel { Id = meter.id, Name = meter.Name, Location = meter.Location, Demand = meter.LastDemand, Inc = meter.DeltaDemand };
+        }
+
+        private List<DashboardItemModel> _mockData()
+        {
+            List<DashboardItemModel> meters = new List<DashboardItemModel>();
+
+            var m = new DashboardItemModel
+            {
+                Id = 1,
+                Location = "507 Michigan",
+                Name = "Main utility meter",
+                Demand = 340,
+                Inc = -2
+            };
+            meters.Add(m);
+            m = new DashboardItemModel
+            {
+                Id = 2,
+                Location = "5757 Corporate",
+                Name = "Main meter",
+                Demand = 680,
+                Inc = .3
+            };
+            meters.Add(m);
+            m = new DashboardItemModel
+            {
+                Id = 3,
+                Location = "Mke Hangar",
+                Name = "Utility meter",
+                Demand = 430,
+                Inc = 5
+            };
+            meters.Add(m);
+            m = new DashboardItemModel
+            {
+                Id = 4,
+                Location = "Plymouth",
+                Name = "Building 36 meter",
+                Demand = 298,
+                Inc = .2
+            };
+            meters.Add(m);
+            m = new DashboardItemModel
+            {
+                Id = 5,
+                Location = "York",
+                Name = "CTU meter",
+                Demand = 1200,
+                Inc = -2
+            };
+            meters.Add(m);
+            m = new DashboardItemModel
+            {
+                Id = 2,
+                Location = "5757 solar",
+                Name = "Roof Array meter",
+                Demand = 545,
+                Inc = .7
+            };
+            meters.Add(m);
+            m = new DashboardItemModel
+            {
+                Id = 2,
+                Location = "5757 Corporate",
+                Name = "Pumps eletric meter",
+                Demand = 680,
+                Inc = 1.1
+            };
+            meters.Add(m);
+            return meters;
         }
     }
 }
