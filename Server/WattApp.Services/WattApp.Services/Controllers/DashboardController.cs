@@ -24,7 +24,7 @@ namespace WattApp.api.Controllers
         // GET api/Dashboard
         [Route("api/customer/{customerGuid}/Dashboard")]
         //[Route("customer/{customerId}/orders")]
-        public IQueryable<DashboardItemModel> GetDashboardItemModels(string customerGuid)
+        public IQueryable<DashboardItemModel> GetAllDashboardItem(string customerGuid)
         {
             var dashboarditems = new List<DashboardItemModel>();
             var ditem = new DashboardItemModel();
@@ -43,18 +43,27 @@ namespace WattApp.api.Controllers
             return dashboarditems.AsQueryable<DashboardItemModel>();
         }
 
-        // GET api/Dashboard/5
-        [ResponseType(typeof(DashboardItemModel))]
-        [Route("api/customers/{customerGuid}/Dashboard/{itemId}")]
+        [Route("api/customer/{customerGuid}/Dashboard/{id}")]
         public IHttpActionResult GetDashboardItemModel(string customerGuid, int id)
         {
-            Equipment equip = _db.Equipment.Find(id);
-            if (equip == null)
+            var dashboarditem = new DashboardItemModel();
+            //int id = 22;
+            // TEMPORARY 
+            // MOCK DATA
+            if (customerGuid == "123mock123")
+                dashboarditem = _mockData().FirstOrDefault((p) => p.Id == id);
+            else
             {
-                return NotFound();
+                var equip = _db.Equipment.First(e => e.Customer.Guid == customerGuid && e.id == id);
+
+                if (equip == null)
+                {
+                    return NotFound();
+                }
+                dashboarditem = _mapEquipmentToDashboardItem(equip);
             }
 
-            return Ok(_mapEquipmentToDashboardItem(equip));
+            return Ok(dashboarditem);
         }
 
         protected override void Dispose(bool disposing)
