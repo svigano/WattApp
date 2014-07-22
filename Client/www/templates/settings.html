@@ -1,0 +1,15 @@
+<ion-view title="WattApp - Settings">
+	<ion-content has-header="true" padding="true">
+    <ul class="list">
+	  <li class="item item-toggle">
+	     Enable real JCI data
+	     <label class="toggle toggle-positive">
+	       <input type="checkbox" ng-model="realdata" ng-checked="realdata" ng-change="saveSettings(realdata)">
+	       <div class="track">
+	         <div class="handle"></div>
+	       </div>
+	     </label>
+	  </li>
+	</ul>
+    </ion-content>
+</ion-view>

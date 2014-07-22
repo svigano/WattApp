@@ -13,15 +13,19 @@ angular.module('wattapp.rest-services', ['ngResource'])
 
         return {
             findAll: function() {
+                var endpoint = baseAPIRoot +'/customer/123mock123/dashboard';
+                // TO DO
+                // Incapsulate in a Service to manage Settings
+                if (window.localStorage['WattAppSettings.Realdata'] == 'true')
+                    endpoint = baseAPIRoot +'/customer/uOKheQeUJ067n4UyVPeMVw/dashboard';
                 // Remark -> $resource return an promise....
-                var endpoint = baseAPIRoot +'/mockmeters';
                 var meters = $resource(endpoint).query();
                 return meters;
             },
 
             findById: function(meterId) {
                 console.log("Request meter detail");
-                var meter = $resource(baseAPIRoot+'/mockmeters/:Id').get({Id:1});
+                var meter = $resource(baseAPIRoot+'/customer/123mock123/dashboard/:Id').get({Id:1});
                 return meter;
             },
 

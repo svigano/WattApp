@@ -72,26 +72,15 @@ angular.module('wattapp', ['ionic','dx','wattapp.rest-services', 'wattapp.contro
                 }
             })
 
-            .state('tab.building', {
-                url: '/building',
+            .state('tab.settings', {
+                url: '/settings',
                 views:{
-                    'tab-building':{
-                        templateUrl: 'templates/buildings-index.html',
-                        controller: 'BuildingsIndexCtrl'
-                    }
-                }
-            })
-
-            .state('tab.building-detail', {
-                url: '/building/:buildingId',
-                views:{
-                    'tab-building':{
-                        templateUrl: 'templates/buildings-detail.html',
-                        controller: 'BuildingsDetailCtrl'
+                    'tab-settings':{
+                        templateUrl: 'templates/settings.html',
+                        controller: 'SettingsCtrl'
                     }
                 }
             });
-
 
 
         // if none of the above states are matched, use this as the fallback

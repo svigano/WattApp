@@ -90,4 +90,28 @@ angular.module('wattapp.controllers', [])
                 }
             console.log(data.length);
             console.log($scope.chartSettings.dataSource);
+    })
+
+    .controller('SettingsCtrl', function ($scope) {
+        var customers = [{"name":"ACME","guid":"123mock123"},{"name":"JCI","guid":"uOKheQeUJ067n4UyVPeMVw"}]
+        $scope.customers = customers;
+        $scope.realdata = 1;
+
+        var loadSettings = function(){
+            $scope.realdata = 0;   
+            if (window.localStorage['WattAppSettings.Realdata'] == 'true')
+                 $scope.realdata = 1;
+
+            console.log('load RealData check ' + $scope.realdata + ' local ' + window.localStorage['WattAppSettings.Realdata'] );
+        }
+        $scope.saveSettings = function(realdata){
+            console.log('Saved RealData check ' + realdata);
+            // TO DO 
+            // Save a JSON format
+            window.localStorage['WattAppSettings.Realdata'] = realdata;
+        };
+
+        loadSettings();
+        console.log('value RealData check ' + $scope.realdata );
     });
+
