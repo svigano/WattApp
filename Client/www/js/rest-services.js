@@ -12,31 +12,18 @@ angular.module('wattapp.rest-services', ['ngResource'])
         // /customer/7iULAhT9vUuLr9A8r2Eb5g/dashboard
 
         return {
-            findAll: function() {
-                var endpoint = baseAPIRoot +'/customer/123mock123/dashboard';
-                // TO DO
-                // Incapsulate in a Service to manage Settings
-                if (window.localStorage['WattAppSettings.Realdata'] == 'true')
-                    endpoint = baseAPIRoot +'/customer/uOKheQeUJ067n4UyVPeMVw/dashboard';
+            findAll: function(customerGuid) {
+                var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard';
                 // Remark -> $resource return an promise....
                 var meters = $resource(endpoint).query();
                 return meters;
             },
 
-            findById: function(meterId) {
-                console.log("Request meter detail");
-                var meter = $resource(baseAPIRoot+'/customer/123mock123/dashboard/:Id').get({Id:1});
+            findById: function(customerGuid, meterId) {
+                var url = baseAPIRoot+'/customer/'+customerGuid;
+                console.log("Request meter detail " + url + " " + meterId);
+                var meter = $resource(url+'/dashboard/:Id').get({Id:meterId});
                 return meter;
-            },
-
-            findByName: function(searchKey) {
-                var deferred = $q.defer();
-                var results = meters.filter(function(element) {
-                    var fullName = element.firstName + " " + element.lastName;
-                    return fullName.toLowerCase().indexOf(searchKey.toLowerCase()) > -1;
-                });
-                deferred.resolve(results);
-                return deferred.promise;
             },
         }
 
@@ -87,7 +74,25 @@ angular.module('wattapp.rest-services', ['ngResource'])
                   },
 
         }
-  });
+    })
+
+    .factory('SettingsService', function($q) {
+
+        return {
+            getSelectedCustomer: function() {
+                // TO DO
+                // Read guid from network and storage....
+                var customerGuid = '123mock123';
+
+                if (window.localStorage['WattAppSettings.Realdata'] == 'true')
+                    customerGuid = 'uOKheQeUJ067n4UyVPeMVw'
+
+                return customerGuid;
+            },
+
+        }
+
+});
 
 
 
