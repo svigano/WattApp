@@ -21,6 +21,10 @@ namespace WattApp.data.Migrations
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data. E.g.
             //
+
+            // DON'T DO ANYTHING
+            return;
+
             var customers = new List<Customer>()
             {
               new Customer { Name = "Green Company", Guid = "7iULAhT9vUuLr9A8r2Eb5g", Enabled = true }
