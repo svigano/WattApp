@@ -62,6 +62,15 @@ angular.module('wattapp', ['ionic','dx','wattapp.rest-services', 'wattapp.contro
                 }
             })
 
+            .state('tab.meters-reports-weather', {
+                url: '/meter/:meterId/reports/weather',
+                views:{
+                    'tab-meter':{
+                        templateUrl: 'templates/meters-reports-weather.html',
+                        controller: 'MetersReportsWeatherCtrl'
+                    }
+                }
+            })
             .state('tab.meters-reports-consumption', {
                 url: '/meter/:meterId/reports/consumption',
                 views:{

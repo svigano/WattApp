@@ -67,6 +67,34 @@ angular.module('wattapp.rest-services', ['ngResource'])
             return data;                    
         }
 
+        var todayDemandWeather = [
+              { t: new Date(2014, 04, 28,0,0,0), val1: 190, val2: 59 },
+              { t: new Date(2014, 04, 28,1,0,0), val1: 230, val2: 60 },
+              { t: new Date(2014, 04, 28,2,0,0), val1: 240, val2: 61 },
+              { t: new Date(2014, 04, 28,3,0,0), val1: 230, val2: 63 },
+              { t: new Date(2014, 04, 28,4,0,0), val1: 200, val2: 64 },
+              { t: new Date(2014, 04, 28,5,0,0), val1: 190, val2: 64 },
+              { t: new Date(2014, 04, 28,6,0,0), val1: 160, val2: 64 },
+              { t: new Date(2014, 04, 28,7,0,0), val1: 160, val2: 68 },
+              { t: new Date(2014, 04, 28,8,0,0), val1: 160, val2: 68 },
+              { t: new Date(2014, 04, 28,9,0,0), val1: 120, val2: 70 },
+              { t: new Date(2014, 04, 28,10,0,0), val1: 120, val2: 70 },
+              { t: new Date(2014, 04, 28,11,0,0), val1: 160, val2: 71 },
+              { t: new Date(2014, 04, 28,12,0,0), val1: 180, val2: 71 },
+              { t: new Date(2014, 04, 28,13,0,0), val1: 180, val2: 71 },
+              { t: new Date(2014, 04, 28,14,0,0), val1: 230, val2: 71 },
+              { t: new Date(2014, 04, 28,15,0,0), val1: 200, val2: 70 },
+              { t: new Date(2014, 04, 28,16,0,0), val1: 190, val2: 70 },
+              { t: new Date(2014, 04, 28,17,0,0), val1: 160, val2: 68 },
+              { t: new Date(2014, 04, 28,18,0,0), val1: 160, val2: 68 },
+              { t: new Date(2014, 04, 28,19,0,0), val1: 160, val2: 68 },
+              { t: new Date(2014, 04, 28,20,0,0), val1: 120, val2: 66 },
+              { t: new Date(2014, 04, 28,21,0,0), val1: 120, val2: 63 },
+              { t: new Date(2014, 04, 28,22,0,0), val1: 160, val2: 60 },
+              { t: new Date(2014, 04, 28,23,0,0), val1: 180, val2: 60 },
+              { t: new Date(2014, 04, 29,0,0,0), val1: 180, val2: 59 }
+              ];
+
         return {
                 getDemandTodayVsYesterday: function(meterId) {
                     var def = $.Deferred();
@@ -76,6 +104,10 @@ angular.module('wattapp.rest-services', ['ngResource'])
                   });
                   return def.promise();
                 },
+
+                getTodayWeather: function(meterId) {
+                  return todayDemandWeather;
+                  },
 
                 getLastWeekConsumption: function(meterId) {
                     var def = $.Deferred();

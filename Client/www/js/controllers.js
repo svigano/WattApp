@@ -97,6 +97,66 @@ angular.module('wattapp.controllers', [])
             console.log($scope.chartSettings.dataSource);
     })
 
+    .controller('MetersReportsWeatherCtrl', function ($scope, $http, $q, $stateParams, MeterHistoryService) {
+            console.log("first this one");
+            var data = [];
+                $scope.chartSettings = {
+
+                    dataSource: {
+                        load: function(){
+                            return MeterHistoryService.getTodayWeather();
+                        }
+                    },
+                    legend: {
+                        visible:true,
+                        horizontalAlignment:"center"
+                    },
+                    scale: {
+                        minorTickInterval: "hour",
+                        placeholderHeight: 20,
+                        format: "hour"
+                    },
+                    size: { height: 400 },
+                    margin:{right:10},
+                    palette: ['#ffae00', '#ff7700', '#fa6a63'],
+                    commonSeriesSettings: {
+                        argumentField: 't',
+                        opacity: 0.4,
+                        type: 'splinearea',
+                    },
+                    series: [
+                        { valueField: 'val1', name: 'Demand' },
+                        { valueField: 'val2', name: 'OAT', axis: "OAT", type: "spline" },
+                        ],
+                    argumentAxis: { valueMarginsEnabled: false },
+                    sliderMarker: {
+                        placeholderSize: {
+                            width: 65,
+                            height: 30
+                        },
+                        format: "hour"
+                    },
+                    valueAxis: [{
+                        grid:{
+                            visible: true
+                            }
+                        },{
+                        name: "OAT",
+                        position: "right",
+                        grid: {
+                            visible: true
+                        },
+                        title: {
+                            text: "OutSide Temperature"
+                        },
+                        label: {
+                            format: "largeNumber"
+                        }
+                    }]
+
+                }
+    })
+
     .controller('SettingsCtrl', function ($scope) {
         var customers = [{"name":"ACME","guid":"123mock123"},{"name":"JCI","guid":"uOKheQeUJ067n4UyVPeMVw"}]
         $scope.customers = customers;
