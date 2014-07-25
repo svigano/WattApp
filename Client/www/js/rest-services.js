@@ -1,6 +1,6 @@
 angular.module('wattapp.rest-services', ['ngResource'])
 
-    .factory('MetersService', function($resource, $q) {
+    .factory('MetersService', function($resource, $http,$q) {
 
         // We use promises to make this api asynchronous. This is clearly not necessary when using in-memory data
         // but it makes this service more flexible and plug-and-play. For example, you can now easily replace this
@@ -8,8 +8,15 @@ angular.module('wattapp.rest-services', ['ngResource'])
         // in the modules invoking the data service since the api is already async.
         var baseAPIRoot = "http://wattappbackend.azurewebsites.net/api"
         
-        // Real data
-        // /customer/7iULAhT9vUuLr9A8r2Eb5g/dashboard
+
+        var convertToLocalTime = function(data, headers){
+            console.log('convertToLocalTime' + meterInfo);
+            var meterInfo = JSON.parse(data);
+            console.log('convertToLocalTime ' + meterInfo.lastUpdate + ' local:' +moment.utc(meterInfo.lastUpdate).toDate());
+            meterInfo.lastUpdate = moment(moment.utc(meterInfo.lastUpdate).toDate()).format('LLL')
+            return meterInfo;                    
+        }
+
 
         return {
             findAll: function(customerGuid) {
@@ -20,10 +27,16 @@ angular.module('wattapp.rest-services', ['ngResource'])
             },
 
             findById: function(customerGuid, meterId) {
-                var url = baseAPIRoot+'/customer/'+customerGuid;
-                console.log("Request meter detail " + url + " " + meterId);
-                var meter = $resource(url+'/dashboard/:Id').get({Id:meterId});
-                return meter;
+                console.log("Request meter detail " + url);
+                var url = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId;
+                var def = $q.defer();
+                $http({ method: 'GET', url: url, transformResponse: convertToLocalTime }).success(function (data) {
+                    def.resolve(data);
+                    console.log(data);
+                });
+                console.log(def);
+
+                return def.promise;
             },
         }
 

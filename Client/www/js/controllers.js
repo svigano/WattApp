@@ -16,7 +16,7 @@ angular.module('wattapp.controllers', [])
         var findAllmeters = function() {
             var customerGuid = SettingsService.getSelectedCustomer();
             $scope.meters = MetersService.findAll(customerGuid);
-            console.log("This is a test " + $scope.meters)
+            console.log("findAllmeters " + $scope.meters)
         }
 
         findAllmeters();
@@ -25,7 +25,10 @@ angular.module('wattapp.controllers', [])
 
     .controller('MetersDetailCtrl', function ($scope, $stateParams, MetersService, SettingsService) {
         var customerGuid = SettingsService.getSelectedCustomer();
-        $scope.meter = MetersService.findById(customerGuid, $stateParams.meterId);
+        MetersService.findById(customerGuid, $stateParams.meterId).then(function(payload) { 
+            console.log(payload);    
+            $scope.meter = payload;
+        });
     })
 
     .controller('MetersReportsConsumptionCtrl', function ($scope, $stateParams, MeterHistoryService) {
