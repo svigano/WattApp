@@ -80,7 +80,7 @@ namespace WattApp.api.Controllers
         private DashboardItemModel _mapEquipmentToDashboardItem(Equipment meter)
         {
             Random r = new Random();
-            return new DashboardItemModel { Id = meter.id, Name = meter.Name, Location = meter.Location, Demand = meter.LastDemand, Inc = meter.DeltaDemand };
+            return new DashboardItemModel { Id = meter.id, Name = meter.Name, Location = meter.Location, Demand = meter.LastDemand, Inc = meter.DeltaDemand, lastUpdate = meter.LastUpdateTime };
         }
 
         private List<DashboardItemModel> _mockData()
@@ -93,7 +93,8 @@ namespace WattApp.api.Controllers
                 Location = "507 Michigan",
                 Name = "Main utility meter",
                 Demand = 340,
-                Inc = -2
+                Inc = -2,
+                lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(15))
             };
             meters.Add(m);
             m = new DashboardItemModel
@@ -102,7 +103,8 @@ namespace WattApp.api.Controllers
                 Location = "5757 Corporate",
                 Name = "Main meter",
                 Demand = 680,
-                Inc = .3
+                Inc = .3,
+                lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(45))
             };
             meters.Add(m);
             m = new DashboardItemModel
@@ -111,8 +113,9 @@ namespace WattApp.api.Controllers
                 Location = "Mke Hangar",
                 Name = "Utility meter",
                 Demand = 430,
-                Inc = 5
-            };
+                Inc = 5,
+                lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(15))
+           };
             meters.Add(m);
             m = new DashboardItemModel
             {
@@ -120,7 +123,8 @@ namespace WattApp.api.Controllers
                 Location = "Plymouth",
                 Name = "Building 36 meter",
                 Demand = 298,
-                Inc = .2
+                Inc = .2,
+                lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(15))
             };
             meters.Add(m);
             m = new DashboardItemModel
@@ -129,7 +133,8 @@ namespace WattApp.api.Controllers
                 Location = "York",
                 Name = "CTU meter",
                 Demand = 1200,
-                Inc = -2
+                Inc = -2,
+                lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(15))
             };
             meters.Add(m);
             m = new DashboardItemModel
@@ -138,7 +143,8 @@ namespace WattApp.api.Controllers
                 Location = "5757 solar",
                 Name = "Roof Array meter",
                 Demand = 545,
-                Inc = .7
+                Inc = .7,
+                lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(15))
             };
             meters.Add(m);
             m = new DashboardItemModel
@@ -147,7 +153,8 @@ namespace WattApp.api.Controllers
                 Location = "5757 Corporate",
                 Name = "Pumps eletric meter",
                 Demand = 680,
-                Inc = 1.1
+                Inc = 1.1,
+                lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(30))
             };
             meters.Add(m);
             return meters;

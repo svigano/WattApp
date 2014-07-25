@@ -19,5 +19,6 @@ namespace WattApp.api.Models
         public string Location { get; set; }
         public double Demand { get; set; }
         public double Inc { get; set; }
+        public DateTime lastUpdate { get; set; }
     }
 }
