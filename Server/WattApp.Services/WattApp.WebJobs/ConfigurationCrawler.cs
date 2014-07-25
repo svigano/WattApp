@@ -22,7 +22,7 @@ namespace WattApp.WebJobs
         private readonly EquipmentClient _equipmentClient;
         private readonly IDataRepository _dataRep = null;
         private Stopwatch _stopWatch = new Stopwatch();
-        private string[] _temporaryJCIMeterName = { "Building 36 - Electric Meter", "CTU - Electric Demand Meter", "Electric Meter" };
+        private string[] _temporaryJCIMeterName = { "Building 36 - Electric Meter", "CTU - Electric Demand Meter", "Electric Meter", "Site Electric Meter" };
 
         public ConfigurationCrawler(Logger logger, ITokenProvider provider, string baseRootAPI)
         {
@@ -77,7 +77,7 @@ namespace WattApp.WebJobs
             try
             {
                 string meterType = CloudConfigurationManager.GetSetting("DISCOVERY_ELETRIC_METER");
-                string demandType = CloudConfigurationManager.GetSetting("DISCOVERY_SUPPORTED_DEMAND_TYPE");
+                string[] supportedDemandTypes = CloudConfigurationManager.GetSetting("DISCOVERY_SUPPORTED_DEMAND_TYPE").Split(',');
                 var enabledCustomer = _dataRep.Customers.Where(c => c.Enabled == true);
                 Console.WriteLine("Enabled Customers " + enabledCustomer.Count());
 
@@ -90,7 +90,7 @@ namespace WattApp.WebJobs
                     Console.WriteLine("Found Meters " + eletricMeters.Count());
                     foreach (var item in eletricMeters)
                     {
-                        if (item.PointRoles.Items.Where(p => p.Type.Id == demandType).Count() > 0)
+                        if (item.PointRoles.Items.Where(p => p.Type.Id.Contains(CloudConfigurationManager.GetSetting("DISCOVERY_SUPPORTED_DEMAND"))).Count() > 0)
                         {
                             if (_temporaryJCIMeterName.Contains(item.Name))
                             {
@@ -98,7 +98,9 @@ namespace WattApp.WebJobs
                                 if (customer.EquipmentList.Where(e => e.PxGuid == item.Id).Count() == 0)
                                 {
                                     var equip = new WattApp.data.Models.Equipment() { Name = item.Name, Type = item.Type.Id, PxGuid = item.Id, Location = "TBD", CustomerId = customer.Id };
-                                    var ptInfo = item.PointRoles.Items.First(p => p.Type.Id == demandType);
+                                    var ptInfo = item.PointRoles.Items.FirstOrDefault(p => p.Type.Id == supportedDemandTypes[0]);
+                                    if (ptInfo == null)
+                                        ptInfo = item.PointRoles.Items.FirstOrDefault(p => p.Type.Id == supportedDemandTypes[1]);
                                     var point = new WattApp.data.Models.Point() { Name = ptInfo.Point.Name, Type = ptInfo.Type.Id, PxGuid = ptInfo.Point.Id, Enabled = true };
                                     equip.PointsList.Add(point);
                                     addedMeters.Add(equip);
