@@ -2,12 +2,7 @@ angular.module('wattapp.rest-services', ['ngResource'])
 
     .factory('MetersService', function($resource, $http,$q) {
 
-        // We use promises to make this api asynchronous. This is clearly not necessary when using in-memory data
-        // but it makes this service more flexible and plug-and-play. For example, you can now easily replace this
-        // service with a JSON service that gets its data from a remote server without having to changes anything
-        // in the modules invoking the data service since the api is already async.
         var baseAPIRoot = "http://wattappbackend.azurewebsites.net/api"
-        
 
         var convertToLocalTime = function(data, headers){
             console.log('convertToLocalTime' + meterInfo);
@@ -61,57 +56,35 @@ angular.module('wattapp.rest-services', ['ngResource'])
             var data = JSON.parse(data);
             if (data.length){
               data = _.map(data, function(sample){
-                return {t: moment(sample.t).day(), val: sample.val}
+                return {t: moment(moment(sample.t).toDate()).format('ddd'), val: sample.val}
               });
             }
             return data;                    
         }
 
-        var todayDemandWeather = [
-              { t: new Date(2014, 04, 28,0,0,0), val1: 190, val2: 59 },
-              { t: new Date(2014, 04, 28,1,0,0), val1: 230, val2: 60 },
-              { t: new Date(2014, 04, 28,2,0,0), val1: 240, val2: 61 },
-              { t: new Date(2014, 04, 28,3,0,0), val1: 230, val2: 63 },
-              { t: new Date(2014, 04, 28,4,0,0), val1: 200, val2: 64 },
-              { t: new Date(2014, 04, 28,5,0,0), val1: 190, val2: 64 },
-              { t: new Date(2014, 04, 28,6,0,0), val1: 160, val2: 64 },
-              { t: new Date(2014, 04, 28,7,0,0), val1: 160, val2: 68 },
-              { t: new Date(2014, 04, 28,8,0,0), val1: 160, val2: 68 },
-              { t: new Date(2014, 04, 28,9,0,0), val1: 120, val2: 70 },
-              { t: new Date(2014, 04, 28,10,0,0), val1: 120, val2: 70 },
-              { t: new Date(2014, 04, 28,11,0,0), val1: 160, val2: 71 },
-              { t: new Date(2014, 04, 28,12,0,0), val1: 180, val2: 71 },
-              { t: new Date(2014, 04, 28,13,0,0), val1: 180, val2: 71 },
-              { t: new Date(2014, 04, 28,14,0,0), val1: 230, val2: 71 },
-              { t: new Date(2014, 04, 28,15,0,0), val1: 200, val2: 70 },
-              { t: new Date(2014, 04, 28,16,0,0), val1: 190, val2: 70 },
-              { t: new Date(2014, 04, 28,17,0,0), val1: 160, val2: 68 },
-              { t: new Date(2014, 04, 28,18,0,0), val1: 160, val2: 68 },
-              { t: new Date(2014, 04, 28,19,0,0), val1: 160, val2: 68 },
-              { t: new Date(2014, 04, 28,20,0,0), val1: 120, val2: 66 },
-              { t: new Date(2014, 04, 28,21,0,0), val1: 120, val2: 63 },
-              { t: new Date(2014, 04, 28,22,0,0), val1: 160, val2: 60 },
-              { t: new Date(2014, 04, 28,23,0,0), val1: 180, val2: 60 },
-              { t: new Date(2014, 04, 29,0,0,0), val1: 180, val2: 59 }
-              ];
-
         return {
-                getDemandTodayVsYesterday: function(meterId) {
+                getDemandTodayVsYesterday: function(customerGuid, meterId) {
                     var def = $.Deferred();
-                    $http({ method: 'GET', url: baseAPIRoot+'/MockMeterHistory', transformResponse: convertToDatetime }).success(function (data) {
+                    var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId;
+                    $http({ method: 'GET', url: endpoint+'/DemandVsYesterday', transformResponse: convertToDatetime }).success(function (data) {
                     def.resolve(data);
-                    console.log(data);
                   });
                   return def.promise();
                 },
 
-                getTodayWeather: function(meterId) {
-                  return todayDemandWeather;
+                getTodayWeather: function(customerGuid, meterId) {
+                    var def = $.Deferred();
+                    var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId;
+                    $http({ method: 'GET', url: endpoint+'/demandAndWeather', transformResponse: convertToDatetime }).success(function (data) {
+                    def.resolve(data);
+                  });
+                  return def.promise();
                   },
 
-                getLastWeekConsumption: function(meterId) {
+                getLastWeekConsumption: function(customerGuid, meterId) {
                     var def = $.Deferred();
-                    $http({ method: 'GET', url: baseAPIRoot+'/consumption', transformResponse: convertToDay }).success(function (data) {
+                    var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId;
+                    $http({ method: 'GET', url: endpoint+'/lastweekConsumption', transformResponse: convertToDay }).success(function (data) {
                     def.resolve(data);
                     console.log(data);
                   });

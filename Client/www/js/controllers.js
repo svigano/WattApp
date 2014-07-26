@@ -31,12 +31,13 @@ angular.module('wattapp.controllers', [])
         });
     })
 
-    .controller('MetersReportsConsumptionCtrl', function ($scope, $stateParams, MeterHistoryService) {
+    .controller('MetersReportsConsumptionCtrl', function ($scope, $stateParams, MeterHistoryService, SettingsService) {
+            var customerGuid = SettingsService.getSelectedCustomer();
             $scope.chartSettings = {
 
                 dataSource: {
                     load: function(){
-                        return MeterHistoryService.getLastWeekConsumption($stateParams.meterId);
+                        return MeterHistoryService.getLastWeekConsumption(customerGuid, $stateParams.meterId);
                     }
                 },
                 margin:{right:20},
@@ -53,14 +54,14 @@ angular.module('wattapp.controllers', [])
             }
     })
 
-    .controller('MetersReportsCtrl', function ($scope, $http, $q, $stateParams, MeterHistoryService) {
-            console.log("first this one");
+    .controller('MetersReportsCtrl', function ($scope, $http, $q, $stateParams, MeterHistoryService, SettingsService) {
+            var customerGuid = SettingsService.getSelectedCustomer();
             var data = [];
                 $scope.chartSettings = {
 
                     dataSource: {
                         load: function(){
-                            return MeterHistoryService.getDemandTodayVsYesterday($stateParams.meterId);
+                            return MeterHistoryService.getDemandTodayVsYesterday(customerGuid, $stateParams.meterId);
                         }
                     },
                     legend: {
@@ -81,8 +82,8 @@ angular.module('wattapp.controllers', [])
                         type: 'splinearea',
                     },
                     series: [
-                        { valueField: 'val1', name: 'yesterday' },
-                        { valueField: 'val2', name: 'today' }
+                        { valueField: 'val1', name: 'today' },
+                        { valueField: 'val2', name: 'yesterday' }
                         ],
                     argumentAxis: { valueMarginsEnabled: false },
                     sliderMarker: {
@@ -97,14 +98,14 @@ angular.module('wattapp.controllers', [])
             console.log($scope.chartSettings.dataSource);
     })
 
-    .controller('MetersReportsWeatherCtrl', function ($scope, $http, $q, $stateParams, MeterHistoryService) {
-            console.log("first this one");
+    .controller('MetersReportsWeatherCtrl', function ($scope, $http, $q, $stateParams, MeterHistoryService, SettingsService) {
+            var customerGuid = SettingsService.getSelectedCustomer();
             var data = [];
                 $scope.chartSettings = {
 
                     dataSource: {
                         load: function(){
-                            return MeterHistoryService.getTodayWeather();
+                            return MeterHistoryService.getTodayWeather(customerGuid, $stateParams.meterId);
                         }
                     },
                     legend: {
