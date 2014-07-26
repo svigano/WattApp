@@ -4,7 +4,7 @@
         <ion-list>
             <ion-item class="item-button-right" ng-repeat="meter in meters" type="item-text-wrap" href="#/tab/meter/{{meter.Id}}">
                  {{meter.Name}} &nbsp;&nbsp;&nbsp;&nbsp;{{meter.Demand}} KW
-                 <button id='delta_info' ng-class="{'button button-small icon-right button-assertive': meter.Inc < 0, 'button button-small button-balanced': meter.Inc > 0}">{{meter.Inc}}%</button>
+                 <button id='delta_info' ng-class="{'button button-small icon-right button-assertive': meter.Inc > 0, 'button button-small button-balanced': meter.Inc < 0}">{{meter.Inc}}%</button>
                 <p>{{meter.Location}}</p>
             </ion-item>
         <ion-list>
