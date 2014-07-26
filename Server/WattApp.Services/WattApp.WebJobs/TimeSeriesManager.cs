@@ -141,7 +141,7 @@ namespace WattApp.WebJobs
         private void _pullTimeSeriesDataByCustomer(Company c, IList<data.Models.Equipment> eqList)
         { 
             var ptIds = new List<string>();
-
+            int kDefaultBackfillTime = int.Parse(CloudConfigurationManager.GetSetting("DEFAULT_BACKFILL_TIME_HOURS"));
             foreach (var equip in eqList)
             {
                 _logger.Debug("Equipment {0} # of Points {1}", equip.Name, equip.PointsList.Count());

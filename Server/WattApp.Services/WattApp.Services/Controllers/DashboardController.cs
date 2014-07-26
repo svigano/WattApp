@@ -47,7 +47,6 @@ namespace WattApp.api.Controllers
         public IHttpActionResult GetDashboardItemModel(string customerGuid, int id)
         {
             var dashboarditem = new DashboardItemModel();
-            //int id = 22;
             // TEMPORARY 
             // MOCK DATA
             if (customerGuid == "123mock123")
