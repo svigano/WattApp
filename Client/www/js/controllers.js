@@ -15,7 +15,9 @@ angular.module('wattapp.controllers', [])
 
         var findAllmeters = function() {
             var customerGuid = SettingsService.getSelectedCustomer();
-            $scope.meters = MetersService.findAll(customerGuid);
+            MetersService.findAll(customerGuid).then(function(payload){
+                $scope.meters = payload;
+            });
             console.log("findAllmeters " + $scope.meters)
         }
 
@@ -58,7 +60,6 @@ angular.module('wattapp.controllers', [])
             var customerGuid = SettingsService.getSelectedCustomer();
             var data = [];
                 $scope.chartSettings = {
-
                     dataSource: {
                         load: function(){
                             return MeterHistoryService.getDemandTodayVsYesterday(customerGuid, $stateParams.meterId);
@@ -67,11 +68,6 @@ angular.module('wattapp.controllers', [])
                     legend: {
                         visible:true,
                         horizontalAlignment:"center"
-                    },
-                    scale: {
-                        minorTickInterval: "hour",
-                        placeholderHeight: 20,
-                        format: "hour"
                     },
                     size: { height: 400 },
                     margin:{right:10},
@@ -82,20 +78,14 @@ angular.module('wattapp.controllers', [])
                         type: 'splinearea',
                     },
                     series: [
-                        { valueField: 'val1', name: 'today' },
-                        { valueField: 'val2', name: 'yesterday' }
+                        { valueField: 'val1', name: 'today'},
+                        { valueField: 'val2', name: 'yesterday'}
                         ],
-                    argumentAxis: { valueMarginsEnabled: false },
-                    sliderMarker: {
-                        placeholderSize: {
-                            width: 65,
-                            height: 30
-                        },
-                        format: "hour"
+                    argumentAxis: { 
+                        valueMarginsEnabled: false,
+                        label: {format:'shortTime'}
                     }
                 }
-            console.log(data.length);
-            console.log($scope.chartSettings.dataSource);
     })
 
     .controller('MetersReportsWeatherCtrl', function ($scope, $http, $q, $stateParams, MeterHistoryService, SettingsService) {
@@ -118,7 +108,7 @@ angular.module('wattapp.controllers', [])
                         format: "hour"
                     },
                     size: { height: 400 },
-                    margin:{right:10},
+                    margin:{right:5},
                     palette: ['#ffae00', '#ff7700', '#fa6a63'],
                     commonSeriesSettings: {
                         argumentField: 't',
