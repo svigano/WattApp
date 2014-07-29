@@ -2,15 +2,10 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
 
     .factory('MetersService', function(DSCacheFactory, $resource, $http,$q) {
 
-        // Create a new cache 
-        var networkDataCache = DSCacheFactory('networkDataCache', {
-            //maxAge: 3600000,
-            //recycleFreq: 1000000, // ms
-            cacheFlushInterval: 1200000,
-            deleteOnExpire: 'aggressive',
-            storageMode: 'localStorage'
-            }
-        );
+        // Create the a new network cache 
+        // Every other service will try to use this cache.
+        // TO DO Find a better place to initialize this cache: What if an other service will execute before this one ?
+        var networkDataCache = DSCacheFactory('networkDataCache');
 
         var baseAPIRoot = "http://wattappbackend.azurewebsites.net/api"
 
@@ -36,8 +31,10 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
 
         var convertToLocalTime = function(data, headers){
             var meterInfo = JSON.parse(data);
+            console.log(meterInfo);
             console.log('convertToLocalTime ' + meterInfo.lastUpdate + ' local:' +moment.utc(meterInfo.lastUpdate).toDate());
             meterInfo.lastUpdate = prettyDate(moment.utc(meterInfo.lastUpdate).toDate());
+            console.log(meterInfo);
             return meterInfo;                    
         }
 
@@ -61,7 +58,6 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
             },
 
             findById: function(customerGuid, meterId) {
-                console.log("Request meter detail " + url);
                 var url = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId;
                 var def = $q.defer();
                 var startRequestTime = new Date().getTime();

@@ -16,8 +16,14 @@ angular.module('wattapp', ['ionic','dx','wattapp.rest-services','wattapp.app-ser
       });
     })
 
-    .config(function ($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, DSCacheFactoryProvider) {
 
+        DSCacheFactoryProvider.setCacheDefaults({
+            cacheFlushInterval: 120000,
+            deleteOnExpire: 'aggressive',
+            storageMode: 'localStorage'
+        });
+        
         // Ionic uses AngularUI Router which uses the concept of states
         // Learn more here: https://github.com/angular-ui/ui-router
         // Set up the various states which the app can be in.
