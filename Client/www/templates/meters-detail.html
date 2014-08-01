@@ -2,17 +2,18 @@
   <ion-content has-header="true" padding="true">
 
       <div class="details">
-          <img src="pics/eletricMeter.jpg" width="80" height="80"/>
+          <img src="pics/eletricMeter.jpg" width="90" height="90"/>
           <h4>{{meter.name}}</h4>
-          <p>Current Demand: {{meter.Demand}} (Kw)</p>
+          <p>Demand: {{meter.Demand}} (Kw)</p>
           <p>Location: {{meter.Location}}</p>
+          <p>Last update: {{meter.lastUpdate}}</p>
       </div>
 
       <div class="list card">
-          <a class="item item-icon-left" href="#/tab/meter/{{meter.Id}}/reports"><i class="icon ion-arrow-graph-up-right"></i>Show today vs yesterday </a>
-          <a class="item item-icon-left" href="#/tab/meter/{{meter.Id}}/reports/weather"><i class="icon ion-arrow-graph-up-right"></i>Show demand and weather</a>
-          <a class="item item-icon-left" href="#/tab/meter/{{meter.Id}}/reports/consumption"><i class="icon ion-stats-bars"></i>Last 7 days consumption</a>          
-          <div class="item">Last update: {{meter.lastUpdate}}</div>
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.Id}}/reports"><i class="icon ion-arrow-graph-up-right"></i>Compare past 24 hours </a>
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.Id}}/reports/weather"><i class="icon ion-thermometer"></i>Compare kw and weather</a>
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.Id}}/reports/consumption"><i class="icon ion-stats-bars"></i>Last 7 days consumption</a>
+          <a class="item item-icon-left" href="#/tab/meter/{{meter.Id}}/reports/peaks"><i class="icon ion-stats-bars"></i>Peaks demand</a>          
           <div class="item" style="color:red">Weekly Peak (to do)</div>
           <div class="item" style="color:red">today $$$$ (to do)</div>
           <div class="item" style="color:red">this week $$$$ (to do)</div>

@@ -4,7 +4,7 @@
 // To use the local wattApp mock server (node) for the meter service inject -> 'wattapp.rest-services'
 // The server is locacate in the server folder
 
-angular.module('wattapp', ['ionic','dx','wattapp.rest-services','wattapp.app-services', 'wattapp.controllers', 'angular-data.DSCacheFactory'])
+angular.module('wattapp', ['ionic','dx','wattapp.rest-services','wattapp.app-services', 'wattapp.controllers', 'wattapp.PeakController','angular-data.DSCacheFactory'])
     
     .run(function($ionicPlatform) {
       $ionicPlatform.ready(function() {
@@ -84,6 +84,23 @@ angular.module('wattapp', ['ionic','dx','wattapp.rest-services','wattapp.app-ser
                         templateUrl: 'templates/meters-reports-consumption.html',
                         controller: 'MetersReportsConsumptionCtrl'
                     }
+                }
+            })
+
+            .state('tab.meters-reports-peaks', {
+                url: '/meter/:meterId/reports/peaks',
+                views:{
+                    'tab-meter':{
+                        templateUrl: 'templates/meters-reports-peaks.html',
+                        controller: 'PeaksCtrl',
+                        resolve:{
+                                    getPeaksDemandDataSync: function($stateParams,SettingsService,MeterHistoryService){
+                                        var customerGuid = SettingsService.getSelectedCustomer();
+                                        console.log('Resolving promising ' + customerGuid + ' id ' + $stateParams.meterId)
+                                        return MeterHistoryService.getPeaksDemandData(customerGuid, $stateParams.meterId);
+                                    }
+                                }
+                    },
                 }
             })
 

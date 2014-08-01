@@ -78,6 +78,20 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
 
         var baseAPIRoot = "http://wattappbackend.azurewebsites.net/api"
 
+        var demandData = { 
+                        peakTd: 590,
+                        average: 450,
+                        items : [
+                              { t: "Monday", val: 500},
+                              { t: "Tuesday", val: 550},
+                              { t: "Wednesday", val: 480},
+                              { t: "Thursday", val: 600},
+                              { t: "Friday", val: 560},
+                              { t: "Saturday", val: 320},
+                              { t: "Sunday", val: 380}
+                          ]
+                      };
+
         var convertToDatetime = function(data, headers){
             var data = JSON.parse(data);
             if (data.length){
@@ -131,11 +145,29 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
                         console.log(endpoint)
                         console.log('time taken for request: ' + (new Date().getTime() - startRequestTime) + 'ms');
                         def.resolve(data);
-                    console.log(data);
-                  });
+                        console.log(data);
+                    });
                   return def.promise();
                   },
 
+                getPeaksDemandData: function(customerGuid, meterId) {
+
+                    //var deferred = $.Deferred();
+                    //deferred.resolve(demandData);
+                    return demandData;
+
+                    // TO DO
+                    var def = $.Deferred();
+                    var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId;
+                    var startRequestTime = new Date().getTime();
+                    $http({ method: 'GET', url: endpoint+'/lastweekConsumption', cache: DSCacheFactory.get('networkDataCache'), transformResponse: convertToDay }).success(function (data) {
+                        console.log(endpoint)
+                        console.log('time taken for request: ' + (new Date().getTime() - startRequestTime) + 'ms');
+                        def.resolve(data);
+                        console.log(data);
+                    });
+                  return def.promise();
+                  },
         }
     });
 
