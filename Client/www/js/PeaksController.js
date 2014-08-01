@@ -32,6 +32,7 @@ angular.module('wattapp.PeakController', [])
                 },
                 valueAxis: {
                     valueType: 'numeric',
+                    max: getPeaksDemandDataSync.peakTd + 100,
                     constantLines: [{
                         value: getPeaksDemandDataSync.peakTd,
                         width: 2,

@@ -84,7 +84,8 @@ angular.module('wattapp.controllers', [])
                     argumentAxis: { 
                         valueMarginsEnabled: false,
                         label: {format:'shortTime'}
-                    }
+                    },
+                    valueAxis:{ min: 200}
                 }
     })
 
