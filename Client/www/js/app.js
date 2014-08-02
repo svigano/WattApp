@@ -4,7 +4,7 @@
 // To use the local wattApp mock server (node) for the meter service inject -> 'wattapp.rest-services'
 // The server is locacate in the server folder
 
-angular.module('wattapp', ['ionic','dx','wattapp.rest-services','wattapp.app-services', 'wattapp.controllers', 'wattapp.PeakController','angular-data.DSCacheFactory'])
+angular.module('wattapp', ['ionic','dx','wattapp.rest-services','wattapp.app-services', 'wattapp.controllers', 'angular-data.DSCacheFactory'])
     
     .run(function($ionicPlatform) {
       $ionicPlatform.ready(function() {

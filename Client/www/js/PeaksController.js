@@ -1,4 +1,4 @@
-angular.module('wattapp.PeakController', [])
+angular.module('wattapp.PeaksController', [])
 
     .controller('PeaksCtrl', function ($scope, $stateParams, getPeaksDemandDataSync, MeterHistoryService, SettingsService) {
             var customerGuid = SettingsService.getSelectedCustomer();
