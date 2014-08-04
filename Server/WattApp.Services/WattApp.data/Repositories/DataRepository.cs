@@ -62,35 +62,50 @@ namespace WattApp.data.Repositories
         public IDbSet<Point> Points { get { return _ctxDb.Points; } }
 
         public IDbSet<Sample> Samples { get { return _ctxDb.Samples; } }
-        public Sample GetLastSampleByPoint(int pointID)
+        public Sample GetLastSampleByPoint(int pointID, SampleType type)
         {
             var lastSample = from n in _ctxDb.Samples
-                            where n.Point.id == pointID
+                            where n.Point.id == pointID && n.SampleType == type
                             group n by n.Point.id into g
                             select g.OrderByDescending(t=>t.TimeStamp).FirstOrDefault();
 
             return lastSample.FirstOrDefault();
         }
-        public Sample GetSamplesByPoint(int pointID, DateTime startTime)
+        public Sample GetSampleByPoint(int pointID, DateTime startTime, SampleType type)
         {
-            //var lastSample = from n in _ctxDb.Samples
-            //                 where n.Point.id == pointID && n.TimeStamp >= startTime && n.TimeStamp <= endTime
-            //                 select n;
 
-            var selected = _ctxDb.Samples.Where(n => n.Point.id == pointID)
+            var selected = _ctxDb.Samples.Where(n => n.Point.id == pointID && n.SampleType == type)
                            .OrderBy(n => Math.Abs(System.Data.Entity.DbFunctions.DiffSeconds(startTime, n.TimeStamp).Value));
 
             return selected.FirstOrDefault();
         }
 
-        public bool Insert(IEnumerable<Sample> list) 
+        public void Insert(IEnumerable<Sample> list) 
         {
-            var done = true;
             var mylist = new List<Sample>(list);
             _ctxDb.Samples.AddRange(list);
             _ctxDb.SaveChanges();
-
-            return done;
         }
+
+        public void Insert(Sample sample)
+        {
+            var tSample = GetSampleByPoint(sample.PointId, sample.TimeStamp, sample.SampleType);
+            if (tSample != null)
+            {
+                tSample.Value = sample.Value; 
+                Update(tSample);
+            }
+            else
+            {
+                _ctxDb.Samples.Add(sample);
+                _ctxDb.SaveChanges();
+            }
+        }
+        public void Update(Sample sample)
+        {
+            _ctxDb.Entry(sample).State = EntityState.Modified;
+            _ctxDb.SaveChanges();
+        }
+
     }
 }

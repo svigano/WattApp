@@ -26,9 +26,12 @@ namespace WattApp.data.Repositories
 
         // Samples
          IDbSet<Sample> Samples { get; }
-        Sample GetLastSampleByPoint(int pointID);
-        Sample GetSamplesByPoint(int pointID, DateTime startTime);
+        Sample GetLastSampleByPoint(int pointID, SampleType t);
+        Sample GetSampleByPoint(int pointID, DateTime startTime, SampleType t);
 
-        bool Insert(IEnumerable<Sample> list);
+        void Insert(IEnumerable<Sample> list);
+        void Insert(Sample s);
+        void Update(Sample s);
+
     }
 }
