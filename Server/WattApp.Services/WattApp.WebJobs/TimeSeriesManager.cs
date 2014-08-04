@@ -17,7 +17,6 @@ namespace WattApp.WebJobs
     internal class TimeSeriesManager
     {
         private const string kEletricMeter = "EletricMeter";
-        private const int DEFAULT_BACKFILL_TIME_HOURS = 64;
 
         private static Logger _logger;
         private string _baseAPIRoot = string.Empty;
@@ -101,7 +100,7 @@ namespace WattApp.WebJobs
                     {
                         if (equip.PointsList.Count() > 0)
                         {
-                            var lastSample = _dataRep.GetLastSampleByPoint(equip.PointsList.First().id);
+                            var lastSample = _dataRep.GetLastSampleByPoint(equip.PointsList.First().id, SampleType.Demand);
 
                             // New data, update demand and delta demand
                             if (lastSample.TimeStamp > equip.LastUpdateTime)
@@ -111,7 +110,7 @@ namespace WattApp.WebJobs
                                 equip.DeltaDemand = 0; // Assume not find the previous 24h sample
                                 // get closest lastSample in the previous 24h
                                 // TO DO set a tollerance 1h ??
-                                var yesterdaySample = _dataRep.GetSamplesByPoint(equip.PointsList.First().id, lastSample.TimeStamp.Subtract(TimeSpan.FromHours(24)));
+                                var yesterdaySample = _dataRep.GetSampleByPoint(equip.PointsList.First().id, lastSample.TimeStamp.Subtract(TimeSpan.FromHours(24)), SampleType.Demand);
                                 if (yesterdaySample != null)
                                 {
                                     var delta = Math.Round((lastSample.Value/yesterdaySample.Value-1)*100,1);
@@ -147,11 +146,11 @@ namespace WattApp.WebJobs
                 _logger.Debug("Equipment {0} # of Points {1}", equip.Name, equip.PointsList.Count());
                 foreach (var item in equip.PointsList)
                 {
-                    DateTime startTime = DateTime.UtcNow.Subtract(TimeSpan.FromHours(DEFAULT_BACKFILL_TIME_HOURS));
+                    DateTime startTime = DateTime.UtcNow.Subtract(TimeSpan.FromHours(kDefaultBackfillTime));
                     DateTime endTime = DateTime.UtcNow;
 
                     // Check the latest lastSample available in wattapp system
-                    var wlatestSample = _dataRep.GetLastSampleByPoint(item.id);
+                    var wlatestSample = _dataRep.GetLastSampleByPoint(item.id, SampleType.Demand);
                     // New point, let's bring back the default backfill data
                     if (wlatestSample == null)
                     {
@@ -187,7 +186,7 @@ namespace WattApp.WebJobs
             var wsamples = new List<WattApp.data.Models.Sample>();
 
             foreach (var item in pxsamples)
-                wsamples.Add(new data.Models.Sample { Point = pt, Value = Math.Round(item.Value,2), TimeStamp = item.Timestamp });   
+                wsamples.Add(new data.Models.Sample { SampleType = SampleType.Demand, Point = pt, Value = Math.Round(item.Value,2), TimeStamp = item.Timestamp });   
 
             return wsamples;
         }
