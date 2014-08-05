@@ -63,7 +63,15 @@ angular.module('wattapp', ['ionic','dx','wattapp.rest-services','wattapp.app-ser
                 views:{
                     'tab-meter':{
                         templateUrl: 'templates/meters-reports.html',
-                        controller: 'MetersReportsCtrl'
+                        controller: 'MetersReportsCtrl',
+                        resolve:{
+                                    getDemandTodayVsYesterdaySync: function($stateParams,SettingsService,MeterHistoryService){
+                                        var customerGuid = SettingsService.getSelectedCustomer();
+                                        console.log('Resolving promising ' + customerGuid + ' id ' + $stateParams.meterId)
+                                        return MeterHistoryService.getDemandTodayVsYesterday(customerGuid, $stateParams.meterId);
+                                    }
+                                }
+
                     }
                 }
             })

@@ -35,6 +35,7 @@ angular.module('wattapp.controllers', [])
 
     .controller('MetersReportsConsumptionCtrl', function ($scope, $stateParams, MeterHistoryService, SettingsService) {
             var customerGuid = SettingsService.getSelectedCustomer();
+
             $scope.chartSettings = {
 
                 dataSource: {
@@ -56,37 +57,43 @@ angular.module('wattapp.controllers', [])
             }
     })
 
-    .controller('MetersReportsCtrl', function ($scope, $http, $q, $stateParams, MeterHistoryService, SettingsService) {
+    .controller('MetersReportsCtrl', function ($scope, $http, $q, $stateParams, getDemandTodayVsYesterdaySync, MeterHistoryService, SettingsService) {
             var customerGuid = SettingsService.getSelectedCustomer();
-            var data = [];
-                $scope.chartSettings = {
-                    dataSource: {
-                        load: function(){
-                            return MeterHistoryService.getDemandTodayVsYesterday(customerGuid, $stateParams.meterId);
-                        }
-                    },
-                    legend: {
-                        visible:true,
-                        horizontalAlignment:"center"
-                    },
-                    size: { height: 400 },
-                    margin:{right:10},
-                    palette: ['#ffae00', '#ff7700', '#fa6a63'],
-                    commonSeriesSettings: {
-                        argumentField: 't',
-                        opacity: 0.4,
-                        type: 'splinearea',
-                    },
-                    series: [
-                        { valueField: 'val1', name: 'today'},
-                        { valueField: 'val2', name: 'yesterday'}
-                        ],
-                    argumentAxis: { 
-                        valueMarginsEnabled: false,
-                        label: {format:'shortTime'}
-                    },
-                    valueAxis:{ min: 200}
-                }
+            
+            // TO DO 
+            // Improve Y Scale value
+            var data = getDemandTodayVsYesterdaySync;
+            var minvalue = _.min(data, function(d){return Math.min(d.val1, d.val2)});
+            var maxvalue =  _.max(data, function(d){return Math.max(d.val1, d.val2)});
+            
+            $scope.chartSettings = {
+                dataSource: data,
+                legend: {
+                    visible:true,
+                    horizontalAlignment:"center"
+                },
+                size: { height: 400 },
+                margin:{right:10},
+                palette: ['#ffae00', '#ff7700', '#fa6a63'],
+                commonSeriesSettings: {
+                    argumentField: 't',
+                    opacity: 0.4,
+                    type: 'splinearea',
+                },
+                series: [
+                    { valueField: 'val1', name: 'today'},
+                    { valueField: 'val2', name: 'yesterday'}
+                    ],
+                argumentAxis: { 
+                    valueMarginsEnabled: false,
+                    label: {format:'shortTime'}
+                },
+                valueAxis:{ 
+                            min: 200
+                            //min: Math.min(minvalue.val1, minvalue.val2)-400,
+                            //max: Math.max(maxvalue.val1, maxvalue.val2)
+                          }
+            }
     })
 
     .controller('MetersReportsWeatherCtrl', function ($scope, $http, $q, $stateParams, MeterHistoryService, SettingsService) {
