@@ -10,6 +10,10 @@ using System.Text;
 using Flurl;
 using System.Threading;
 using System.Diagnostics;
+using WattApp.data.Webjobs;
+using WattApp.data.Repositories;
+using WattApp.data.Models;
+using WattApp.WebJobs.API;
 
 namespace WattApp.WebJobs
 {
@@ -22,13 +26,24 @@ namespace WattApp.WebJobs
         static void Main(string[] args)
         {
             Stopwatch stopWatch = new Stopwatch();
+            IDataRepository dataRep = new DataRepository(new WattAppContext());
+
             stopWatch.Start();
             try
             {
+                // TO DO Simplify initialization
                 _initClientAPI();
+                APIClient apiClient = new APIClient(_tokenProvider, _baseAPIRoot);
+
+                var taskList = new List<ITask>();
+                taskList.Add(new RetrieveDemandTimeSeriesTask(_logger, dataRep, apiClient));
+                taskList.Add(new DemandRollupAndUpdatesTask(_logger, dataRep));
+
+                foreach (var item in taskList)
+                    item.Execute();
 
                 // CRAWLER Section
-                var crawler = new ConfigurationCrawler(_logger, _tokenProvider, _baseAPIRoot);
+                //var crawler = new ConfigurationCrawler(_logger, _tokenProvider, _baseAPIRoot);
                 
                 // Customers
                 //crawler.DiscoveryAndUpdateCustomersTask();
@@ -40,19 +55,17 @@ namespace WattApp.WebJobs
                 // TO DO Refactor: Common assembly + single exe per webjob
 
                 // UNCOMMENT BEFORE DEPLOY WEBJOB
-                TimeSeriesManager timeseriesManager = new TimeSeriesManager(_logger, _tokenProvider, _baseAPIRoot);
-                var enabledEquipmentByCustomerMap = timeseriesManager.FindEnabledEquipment();
-                timeseriesManager.PullTimeSeriesTask(enabledEquipmentByCustomerMap);
-                timeseriesManager.ExecuteRollupAndUpdatesTask(enabledEquipmentByCustomerMap);
+                //TimeSeriesManager timeseriesManager = new TimeSeriesManager(_logger, _tokenProvider, _baseAPIRoot);
+                //var enabledEquipmentByCustomerMap = timeseriesManager.FindEnabledEquipment();
+                //timeseriesManager.PullTimeSeriesTask(enabledEquipmentByCustomerMap);
+                //timeseriesManager.ExecuteRollupAndUpdatesTask(enabledEquipmentByCustomerMap);
             }
             catch (Exception e)
             {
                 _logger.Error("WebJob -> Unhandle Exception ", e);
-                Trace.WriteLine("WebJob -> Unhandle Exception " + e.Message);
             }
-            string str = string.Format("WebJob executed in (ms) {0}", stopWatch.ElapsedMilliseconds);
+            string str = string.Format("DemandTimeSeriesUpdates Elapsed={0} ms", stopWatch.ElapsedMilliseconds);
             _logger.Info(str);
-            Trace.WriteLine(str);
             Thread.Sleep(2000);
         }
 

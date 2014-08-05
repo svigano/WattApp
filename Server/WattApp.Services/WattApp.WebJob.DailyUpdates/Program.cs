@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WattApp.data.Models;
 using WattApp.data.Repositories;
+using WattApp.data.Webjobs;
 
 namespace WattApp.WebJob.DailyUpdates
 {
@@ -23,27 +24,26 @@ namespace WattApp.WebJob.DailyUpdates
 
             try
             {
-                var rollupManager = new RollUpManager(_logger, dataRep);
-                var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(dataRep);
+                var taskList = new List<ITask>();
+                taskList.Add(new DailyPeaksTask(_logger, dataRep));
+                taskList.Add(new DailyConsumptionTask(_logger, dataRep));
 
-                var day = new DateTime(2014, 8, 2);
-                Console.WriteLine(day);
+                foreach (var item in taskList)
+                    item.Execute();
 
-                rollupManager.CalculateDailyPeaks(enabledEquipmentByCustomerMap, day);
-
-                rollupManager.CalculateDailyConsumption(enabledEquipmentByCustomerMap, day);
-
+                //var rollupManager = new RollUpManager(_logger, dataRep);
+                //var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(dataRep);
+                //rollupManager.CalculateDailyPeaks(enabledEquipmentByCustomerMap, day);
+                //rollupManager.CalculateDailyConsumption(enabledEquipmentByCustomerMap, day);
             }
             catch (Exception e)
             {
-                _logger.Error("WebJob -> Unhandle Exception ", e);
-                Trace.WriteLine("WebJob -> Unhandle Exception " + e.Message);
+                _logger.Error("DailyUpdates WebJob -> Unhandle Exception ", e);
             }
-            string str = string.Format("DailyUpdates WebJob executed in (ms) {0}", stopWatch.ElapsedMilliseconds);
+            string str = string.Format("DailyUpdatesWebJob Elapsed={0} ms", stopWatch.ElapsedMilliseconds);
             _logger.Info(str);
             Trace.WriteLine(str);
             Thread.Sleep(2000);
-            Console.ReadKey();
         }
     }
 }
