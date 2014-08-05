@@ -30,7 +30,7 @@ namespace WattApp.api.Filter
         {
             var controllerName = data.ControllerContext.ControllerDescriptor.ControllerName;
             var actionName = data.ActionDescriptor.ActionName;
-            _logger.Info(string.Format("{0}.{1} --> {2} (ms)", controllerName, actionName, time));
+            _logger.Info(string.Format("{0}.{1}={2} (ms)", controllerName, actionName, time));
         }
     }
 }

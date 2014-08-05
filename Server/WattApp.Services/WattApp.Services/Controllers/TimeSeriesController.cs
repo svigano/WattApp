@@ -70,20 +70,32 @@ namespace WattApp.api.Controllers
         [Route("api/customer/{customerGuid}/Dashboard/{ptID}/lastweekConsumption")]
         public IEnumerable<DailyConsumption> GetLastweekConsumption(string customerGuid, int ptID)
         {
+            var weeklyData = new List<DailyConsumption>();
+
             // TEMPORARY 
             // MOCK DATA
-            //if (customerGuid == "123mock123")
-            //    readings = _mockDemandVsYesterdayData();
-            var weeklyData = new List<DailyConsumption>();
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 23), val = 550 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 24), val = 590 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 25), val = 400 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 26), val = 430 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 27), val = 600 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 28), val = 520 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 29), val = 480 });
+            if (customerGuid == "123mock123")
+                weeklyData = _mockConsumptionData();
+            else
+            {
+                var startTime = DateTime.Today.Subtract(TimeSpan.FromDays(7));
+                var last7ConsumptionSamples = from s in _dataRep.Samples
+                                              where s.PointId == ptID &&
+                                                    s.SampleType == SampleType.DailyConsumption &&
+                                                    s.TimeStamp > startTime
+                                              select s;
+                foreach (var item in last7ConsumptionSamples)
+                    weeklyData.Add(_mapSampleToDailyConsumption(item));
+            }
             
             return weeklyData; 
+        }
+
+        // TO DO
+        // Evaluate to use AuotMapper in the future
+        private DailyConsumption _mapSampleToDailyConsumption(Sample s)
+        {
+            return new DailyConsumption() { t = s.TimeStamp, val = (int)s.Value };
         }
 
         private List<DoubleReading> _mockDemandVsYesterdayData()
@@ -203,5 +215,19 @@ namespace WattApp.api.Controllers
             return samples;
         }
 
+        private List<DailyConsumption> _mockConsumptionData()
+        {
+            var weeklyData = new List<DailyConsumption>();
+            var today = DateTime.Today;
+            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(6)), val = 550 });
+            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(5)), val = 590 });
+            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(4)), val = 400 });
+            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(3)), val = 430 });
+            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(2)), val = 600 });
+            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(1)), val = 520 });
+            weeklyData.Add(new DailyConsumption() { t = today, val = 480 });
+
+            return weeklyData; 
+        }
     }
 }
