@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using WattApp.api.Models;
 using WattApp.data.Models;
 using WattApp.data.Repositories;
 
@@ -68,9 +69,9 @@ namespace WattApp.api.Controllers
         }
 
         [Route("api/customer/{customerGuid}/Dashboard/{ptID}/lastweekConsumption")]
-        public IEnumerable<DailyConsumption> GetLastweekConsumption(string customerGuid, int ptID)
+        public IEnumerable<SampleModel> GetLastweekConsumption(string customerGuid, int ptID)
         {
-            var weeklyData = new List<DailyConsumption>();
+            var weeklyData = new List<SampleModel>();
 
             // TEMPORARY 
             // MOCK DATA
@@ -85,19 +86,48 @@ namespace WattApp.api.Controllers
                                                     s.TimeStamp > startTime
                                               select s;
                 foreach (var item in last7ConsumptionSamples)
-                    weeklyData.Add(_mapSampleToDailyConsumption(item));
+                    weeklyData.Add(_mapSampleToSampleModel(item));
             }
             
             return weeklyData; 
         }
 
-        // TO DO
-        // Evaluate to use AuotMapper in the future
-        private DailyConsumption _mapSampleToDailyConsumption(Sample s)
+        [Route("api/customer/{customerGuid}/Dashboard/{ptID}/peakDemandSummary")]
+        public WeeklyPeaksModel GetpeakDemandSummary(string customerGuid, int ptID)
         {
-            return new DailyConsumption() { t = s.TimeStamp, val = (int)s.Value };
+            var weeklyData = new WeeklyPeaksModel();
+
+            // TEMPORARY 
+            // MOCK DATA
+            if (customerGuid == "123mock123")
+                weeklyData = _mockPeakDemandSummaryData();
+            else
+            {
+                var startTime = DateTime.Today.Subtract(TimeSpan.FromDays(7));
+                var last7ConsumptionSamples = from s in _dataRep.Samples
+                                              where s.PointId == ptID &&
+                                                    s.SampleType == SampleType.DailyConsumption &&
+                                                    s.TimeStamp > startTime
+                                              select s;
+                var weeklyPeaks = new List<SampleModel>();
+
+                foreach (var item in last7ConsumptionSamples)
+                    weeklyPeaks.Add(_mapSampleToSampleModel(item));
+
+                weeklyData.WeeklyPeaks = weeklyPeaks;
+                weeklyData.AverageWeeklyDemand = (int)weeklyPeaks.Average(r => r.val);
+                weeklyData.YearToDatePeak = (int)weeklyPeaks.Max(r => r.val);
+            }
+
+            return weeklyData;
         }
 
+        // TO DO
+        // Evaluate to use AuotMapper in the future
+        private SampleModel _mapSampleToSampleModel(Sample s)
+        {
+            return new SampleModel() { t = s.TimeStamp, val = (int)s.Value };
+        }
         private List<DoubleReading> _mockDemandVsYesterdayData()
         {
             var samples = new List<DoubleReading>();
@@ -214,18 +244,34 @@ namespace WattApp.api.Controllers
 
             return samples;
         }
-
-        private List<DailyConsumption> _mockConsumptionData()
+        private WeeklyPeaksModel _mockPeakDemandSummaryData()
         {
-            var weeklyData = new List<DailyConsumption>();
+            var data = new WeeklyPeaksModel();
+            var weeklyData = new List<SampleModel>();
             var today = DateTime.Today;
-            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(6)), val = 550 });
-            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(5)), val = 590 });
-            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(4)), val = 400 });
-            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(3)), val = 430 });
-            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(2)), val = 600 });
-            weeklyData.Add(new DailyConsumption() { t = today.Subtract(TimeSpan.FromDays(1)), val = 520 });
-            weeklyData.Add(new DailyConsumption() { t = today, val = 480 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(6)), val = 550 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(5)), val = 590 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(4)), val = 400 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(3)), val = 430 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(2)), val = 600 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(1)), val = 520 });
+            weeklyData.Add(new SampleModel() { t = today, val = 480 });
+            data.WeeklyPeaks = weeklyData;
+            data.YearToDatePeak = 890;
+            data.AverageWeeklyDemand = 470;
+            return data;
+        }
+        private List<SampleModel> _mockConsumptionData()
+        {
+            var weeklyData = new List<SampleModel>();
+            var today = DateTime.Today;
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(6)), val = 12550 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(5)), val = 12590 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(4)), val = 12900 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(3)), val = 11430 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(2)), val = 10600 });
+            weeklyData.Add(new SampleModel() { t = today.Subtract(TimeSpan.FromDays(1)), val = 12020 });
+            weeklyData.Add(new SampleModel() { t = today, val = 480 });
 
             return weeklyData; 
         }

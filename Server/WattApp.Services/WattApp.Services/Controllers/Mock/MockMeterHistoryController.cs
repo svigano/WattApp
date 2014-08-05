@@ -4,22 +4,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using WattApp.api.Models;
 
 namespace WattApp.api.Controllers
 {
-    public class DoubleReading
-    {
-        public DateTime t { get; set; }
-        public double val1 { get; set; }
-        public double val2 { get; set; }
-    }
-
-    public class DailyConsumption
-    {
-        public DateTime t { get; set; }
-        public int val { get; set; }
-    }
-
     public class MockMeterHistoryController : ApiController
     {
         public IEnumerable<DoubleReading> GetTodayVsYesterday()
@@ -82,16 +70,16 @@ namespace WattApp.api.Controllers
         }
 
         [Route("api/consumption")]
-        public IEnumerable<DailyConsumption> GetWeeklyConsumption() 
+        public IEnumerable<SampleModel> GetWeeklyConsumption() 
         {
-            var weeklyData = new List<DailyConsumption>();
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 23), val = 550 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 24), val = 590 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 25), val = 400 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 26), val = 430 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 27), val = 600 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 28), val = 520 });
-            weeklyData.Add(new DailyConsumption() { t = new DateTime(2014, 5, 29), val = 480 });
+            var weeklyData = new List<SampleModel>();
+            weeklyData.Add(new SampleModel() { t = new DateTime(2014, 5, 23), val = 550 });
+            weeklyData.Add(new SampleModel() { t = new DateTime(2014, 5, 24), val = 590 });
+            weeklyData.Add(new SampleModel() { t = new DateTime(2014, 5, 25), val = 400 });
+            weeklyData.Add(new SampleModel() { t = new DateTime(2014, 5, 26), val = 430 });
+            weeklyData.Add(new SampleModel() { t = new DateTime(2014, 5, 27), val = 600 });
+            weeklyData.Add(new SampleModel() { t = new DateTime(2014, 5, 28), val = 520 });
+            weeklyData.Add(new SampleModel() { t = new DateTime(2014, 5, 29), val = 480 });
             
             return weeklyData; 
         }
