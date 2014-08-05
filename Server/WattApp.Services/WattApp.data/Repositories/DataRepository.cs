@@ -71,12 +71,19 @@ namespace WattApp.data.Repositories
 
             return lastSample.FirstOrDefault();
         }
-        public Sample GetSampleByPoint(int pointID, DateTime startTime, SampleType type)
+        public Sample GetSampleByClosestTimeStamp(int pointID, DateTime startTime, SampleType type)
         {
 
             var selected = _ctxDb.Samples.Where(n => n.Point.id == pointID && n.SampleType == type)
                            .OrderBy(n => Math.Abs(System.Data.Entity.DbFunctions.DiffSeconds(startTime, n.TimeStamp).Value));
 
+            return selected.FirstOrDefault();
+        }
+
+        public Sample GetSampleByTimeStamp(int pointID, DateTime timeStamp, SampleType type)
+        {
+
+            var selected = _ctxDb.Samples.Where(n => n.Point.id == pointID && n.SampleType == type && n.TimeStamp == timeStamp);
             return selected.FirstOrDefault();
         }
 
@@ -89,7 +96,7 @@ namespace WattApp.data.Repositories
 
         public void Insert(Sample sample)
         {
-            var tSample = GetSampleByPoint(sample.PointId, sample.TimeStamp, sample.SampleType);
+            var tSample = GetSampleByTimeStamp(sample.PointId, sample.TimeStamp, sample.SampleType);
             if (tSample != null)
             {
                 tSample.Value = sample.Value; 

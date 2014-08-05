@@ -38,7 +38,7 @@ namespace WattApp.data.Webjobs
                             equip.DeltaDemand = 0; // Assume not find the previous 24h sample
                             // get closest lastSample in the previous 24h
                             // TO DO set a tollerance 1h ??
-                            var yesterdaySample = _dataRep.GetSampleByPoint(equip.PointsList.First().id, lastSample.TimeStamp.Subtract(TimeSpan.FromHours(24)), SampleType.Demand);
+                            var yesterdaySample = _dataRep.GetSampleByClosestTimeStamp(equip.PointsList.First().id, lastSample.TimeStamp.Subtract(TimeSpan.FromHours(24)), SampleType.Demand);
                             if (yesterdaySample != null)
                             {
                                 var delta = Math.Round((lastSample.Value / yesterdaySample.Value - 1) * 100, 1);

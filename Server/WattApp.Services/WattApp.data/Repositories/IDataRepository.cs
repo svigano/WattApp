@@ -27,8 +27,8 @@ namespace WattApp.data.Repositories
         // Samples
          IDbSet<Sample> Samples { get; }
         Sample GetLastSampleByPoint(int pointID, SampleType t);
-        Sample GetSampleByPoint(int pointID, DateTime startTime, SampleType t);
-
+        Sample GetSampleByClosestTimeStamp(int pointID, DateTime startTime, SampleType t);
+        Sample GetSampleByTimeStamp(int pointID, DateTime time, SampleType t);
         void Insert(IEnumerable<Sample> list);
         void Insert(Sample s);
         void Update(Sample s);
