@@ -6,8 +6,8 @@
                  {{meter.Name}} 
                 <p>{{meter.Location}}</p>
                  <div class="buttons">
-                 {{meter.Demand}} KW
-                 <button id='delta_info' ng-class="{'button button-small icon-right button-assertive': meter.Inc > 0, 'button button-small button-balanced': meter.Inc < 0}">{{meter.Inc}}%</button>
+                 {{meter.Demand}} kW
+                 <button ng-class="{'button button-small icon-right button-assertive my-button-dashboard': meter.Inc > 0, 'button button-small button-balanced my-button-dashboard': meter.Inc < 0}">{{meter.Inc}}%</button>
                  </div>
             </ion-item>
         <ion-list>

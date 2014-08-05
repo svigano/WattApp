@@ -17,8 +17,12 @@
   padding-right:0px !important;
 }
 #delta_info {
-	width: 60px;
-	text-align: center;
+    font-size:12px !important;
 }
 
+.my-button-dashboard{
+	width: 50px;
+	text-align: center;
+	font-size:12px !important;
+}
 
