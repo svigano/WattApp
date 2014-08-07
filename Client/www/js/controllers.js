@@ -87,6 +87,8 @@ angular.module('wattapp.controllers', [])
                 argumentAxis: { 
                     valueMarginsEnabled: false,
                     label: {format:'shortTime'}
+                    //tickInterval: { hours: 1 },
+                    //setTicksAtUnitBeginning: true
                 },
                 valueAxis:{ 
                             min: 200
