@@ -104,14 +104,14 @@ namespace WattApp.api.Controllers
             else
             {
                 var startTime = DateTime.Today.Subtract(TimeSpan.FromDays(7));
-                var last7ConsumptionSamples = from s in _dataRep.Samples
+                var lastPeaksSamples = from s in _dataRep.Samples
                                               where s.PointId == ptID &&
-                                                    s.SampleType == SampleType.DailyConsumption &&
+                                                    s.SampleType == SampleType.DailyPeakDemand &&
                                                     s.TimeStamp > startTime
                                               select s;
                 var weeklyPeaks = new List<SampleModel>();
 
-                foreach (var item in last7ConsumptionSamples)
+                foreach (var item in lastPeaksSamples)
                     weeklyPeaks.Add(_mapSampleToSampleModel(item));
 
                 weeklyData.WeeklyPeaks = weeklyPeaks;
