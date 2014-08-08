@@ -1,17 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WattApp.api", "WattApp.Services\WattApp.api.csproj", "{E6A98572-8245-4FC6-8A68-447AA3EC649C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WattApp.WebJobs", "WattApp.WebJobs\WattApp.WebJobs.csproj", "{402CD7FC-5677-4E42-A928-A2952FF2C2C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WattApp.WebJobs.15MinRefresh", "WattApp.WebJobs\WattApp.WebJobs.15MinRefresh.csproj", "{402CD7FC-5677-4E42-A928-A2952FF2C2C3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingApi", "BuildingApi\BuildingApi.csproj", "{B29BC045-00DA-4B3C-A0FA-AEB2D72FC51E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WattApp.data", "WattApp.data\WattApp.data.csproj", "{DDEF6C39-51BA-42B2-AC82-785F584578BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WattApp.WebJob.DailyUpdates", "WattApp.WebJob.DailyUpdates\WattApp.WebJob.DailyUpdates.csproj", "{7192BAFC-6494-4D3F-B8A6-F91CE9832885}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{A0BAF784-6084-4B5A-8561-E8F47F139EB6}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
