@@ -58,14 +58,24 @@ angular.module('wattapp.controllers', [])
     })
 
     .controller('MetersReportsCtrl', function ($scope, $http, $q, $stateParams, getDemandTodayVsYesterdaySync, MeterHistoryService, SettingsService) {
-            var customerGuid = SettingsService.getSelectedCustomer();
-            
-            // TO DO 
-            // Improve Y Scale value
+
+            var calculateMinMaxChartScale = function(data){
+                var minvaluePair = _.min(data, function(d){return Math.min(d.val1, d.val2)});
+                var maxvaluePair =  _.max(data, function(d){return Math.max(d.val1, d.val2)});
+                var min = Math.min(minvaluePair.val1, minvaluePair.val2);
+                var max = Math.max(maxvaluePair.val1, maxvaluePair.val2);
+                min = ((min - 300 < 0) ? 0 : min - 300)
+                return {'min':min, 'max':max};
+            }
+
             var data = getDemandTodayVsYesterdaySync;
-            var minvalue = _.min(data, function(d){return Math.min(d.val1, d.val2)});
-            var maxvalue =  _.max(data, function(d){return Math.max(d.val1, d.val2)});
-            
+            console.log(data[23])
+            for (index = 0; index < data.length; ++index){
+                console.log(data[index].t)
+            }
+
+            var minMax = calculateMinMaxChartScale(data);
+            console.log(minMax)
             $scope.chartSettings = {
                 dataSource: data,
                 legend: {
@@ -73,7 +83,7 @@ angular.module('wattapp.controllers', [])
                     horizontalAlignment:"center"
                 },
                 size: { height: 400 },
-                margin:{right:10},
+                margin:{right:15},
                 palette: ['#ffae00', '#ff7700', '#fa6a63'],
                 commonSeriesSettings: {
                     argumentField: 't',
@@ -86,14 +96,13 @@ angular.module('wattapp.controllers', [])
                     ],
                 argumentAxis: { 
                     valueMarginsEnabled: false,
-                    label: {format:'shortTime'}
-                    //tickInterval: { hours: 1 },
+                    label: {format:'shortTime'},
+                    tickInterval: { hours: 3 },
                     //setTicksAtUnitBeginning: true
                 },
                 valueAxis:{ 
-                            min: 200
-                            //min: Math.min(minvalue.val1, minvalue.val2)-400,
-                            //max: Math.max(maxvalue.val1, maxvalue.val2)
+                            min: minMax.min,
+                            max: minMax.max,
                           }
             }
     })
@@ -117,7 +126,7 @@ angular.module('wattapp.controllers', [])
                         placeholderHeight: 20,
                         format: "hour"
                     },
-                    size: { height: 400 },
+                    //size: { height: 400 },
                     margin:{right:5},
                     palette: ['#ffae00', '#ff7700', '#fa6a63'],
                     commonSeriesSettings: {
@@ -159,8 +168,6 @@ angular.module('wattapp.controllers', [])
     })
 
     .controller('SettingsCtrl', function ($scope) {
-        var customers = [{"name":"ACME","guid":"123mock123"},{"name":"JCI","guid":"uOKheQeUJ067n4UyVPeMVw"}]
-        $scope.customers = customers;
         $scope.realdata = 1;
 
         var loadSettings = function(){
@@ -182,16 +189,12 @@ angular.module('wattapp.controllers', [])
     })
 
         .controller('PeaksCtrl', function ($scope, $stateParams, getPeaksDemandDataSync, MeterHistoryService, SettingsService) {
-            var customerGuid = SettingsService.getSelectedCustomer();
-            console.log('Resolved data ' + getPeaksDemandDataSync.length)
-            console.log(getPeaksDemandDataSync)
             $scope.chartSettings = {
 
-                dataSource: getPeaksDemandDataSync.items,
+                dataSource: getPeaksDemandDataSync.WeeklyPeaks,
                 margin:{right:20},
                 legend: {
                     visible:false,
-                    horizontalAlignment:"center"
                 },
                 series: {
                   argumentField: "t",
@@ -200,9 +203,9 @@ angular.module('wattapp.controllers', [])
                   color: '#ffa500'
                 },
                 customizePoint: function() {
-                                if(this.value > getPeaksDemandDataSync.peakTd) {
+                                if(this.value > getPeaksDemandDataSync.YearToDatePeak) {
                                     return { color: '#ff4500' };
-                                } else if(this.value < getPeaksDemandDataSync.average) {
+                                } else if(this.value < getPeaksDemandDataSync.AverageWeeklyDemand) {
                                     return { color: '#00ced1' };
                                 }
                  },
@@ -213,25 +216,27 @@ angular.module('wattapp.controllers', [])
                 },
                 valueAxis: {
                     valueType: 'numeric',
-                    max: getPeaksDemandDataSync.peakTd + 100,
+                    max: getPeaksDemandDataSync.YearToDatePeak + 100,
                     constantLines: [{
-                        value: getPeaksDemandDataSync.peakTd,
+                        value: getPeaksDemandDataSync.YearToDatePeak,
                         width: 2,
                         dashStyle: 'dash',
                         color: '#FF0000',
                         label: {
                             text: 'Highest',
-                            position: 'outside'
+                            position: 'outside',
+                            horizontalAlignment: 'right'
                         }
                     },
                     {
-                        value: getPeaksDemandDataSync.average,
+                        value: getPeaksDemandDataSync.AverageWeeklyDemand,
                         width: 2,
                         dashStyle: 'dash',
                         color: '#00ced1',
                         label: {
                             text: 'Average',
-                            position: 'outside'
+                            position: 'outside',
+                            horizontalAlignment: 'right'
                         }
                     }]
                 }

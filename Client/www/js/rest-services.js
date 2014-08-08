@@ -44,8 +44,6 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
             findAll: function(customerGuid) {
 
                 var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard';
-                // Remark -> $resource return an promise....
-                //var meters = $resource(endpoint).query();
                 var def = $q.defer();
                 var startRequestTime = new Date().getTime();
                 $http({ method: 'GET', url: endpoint, cache: DSCacheFactory.get('networkDataCache'), transformResponse: convertToLocalTime }).success(function (data) {
@@ -79,8 +77,8 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
         var baseAPIRoot = "http://wattappbackend.azurewebsites.net/api"
 
         var demandData = { 
-                        peakTd: 590,
-                        average: 450,
+                        YearToDatePeak: 590,
+                        AverageWeeklyDemand: 450,
                         items : [
                               { t: "Monday", val: 500},
                               { t: "Tuesday", val: 550},
@@ -96,7 +94,8 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
             var data = JSON.parse(data);
             if (data.length){
               data = _.map(data, function(sample){
-                return {t: moment(sample.t).toDate(), val1: sample.val1, val2: sample.val2}
+                console.log(sample.t)
+                return {t: moment.utc(sample.t).toDate(), val1: sample.val1, val2: sample.val2}
               });
             }
             return data;                    
@@ -106,12 +105,18 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
             var data = JSON.parse(data);
             if (data.length){
               data = _.map(data, function(sample){
-                return {t: moment(moment(sample.t).toDate()).format('ddd'), val: sample.val}
+                return {t: moment.utc(moment(sample.t).toDate()).format('ddd'), val: sample.val}
               });
             }
             return data;                    
         }
 
+        var convertWeeklyPeakTimeToDay = function(data, headers){
+            var data = JSON.parse(data);
+            for (index = 0; index < data.WeeklyPeaks.length; ++index)
+                data.WeeklyPeaks[index].t = moment(moment(data.WeeklyPeaks[index].t).toDate()).format('ddd')
+            return data;                    
+        }
         return {
                 getDemandTodayVsYesterday: function(customerGuid, meterId) {
                     var def = $.Deferred();
@@ -139,9 +144,9 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
 
                 getLastWeekConsumption: function(customerGuid, meterId) {
                     var def = $.Deferred();
-                    var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId;
+                    var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId+'/lastweekConsumption';
                     var startRequestTime = new Date().getTime();
-                    $http({ method: 'GET', url: endpoint+'/lastweekConsumption', cache: DSCacheFactory.get('networkDataCache'), transformResponse: convertToDay }).success(function (data) {
+                    $http({ method: 'GET', url: endpoint, cache: DSCacheFactory.get('networkDataCache'), transformResponse: convertToDay }).success(function (data) {
                         console.log(endpoint)
                         console.log('time taken for request: ' + (new Date().getTime() - startRequestTime) + 'ms');
                         def.resolve(data);
@@ -151,20 +156,13 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
                   },
 
                 getPeaksDemandData: function(customerGuid, meterId) {
-
-                    //var deferred = $.Deferred();
-                    //deferred.resolve(demandData);
-                    return demandData;
-
-                    // TO DO
                     var def = $.Deferred();
-                    var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId;
+                    var endpoint = baseAPIRoot+'/customer/'+customerGuid+'/dashboard/'+meterId+'/peakDemandSummary';
                     var startRequestTime = new Date().getTime();
-                    $http({ method: 'GET', url: endpoint+'/lastweekConsumption', cache: DSCacheFactory.get('networkDataCache'), transformResponse: convertToDay }).success(function (data) {
+                    $http({ method: 'GET', url: endpoint, cache: DSCacheFactory.get('networkDataCache'), transformResponse: convertWeeklyPeakTimeToDay }).success(function (data) {
                         console.log(endpoint)
                         console.log('time taken for request: ' + (new Date().getTime() - startRequestTime) + 'ms');
                         def.resolve(data);
-                        console.log(data);
                     });
                   return def.promise();
                   },
