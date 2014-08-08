@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <DeployDefaultTargetFrameworkVersion>4.5.1</DeployDefaultTargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -78,6 +79,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\wattappbackend - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\wattappbackend - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\wattappbackend.pubxml" />
+    <None Include="Properties\webjob-publish-settings.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuildingApi\BuildingApi.csproj">
