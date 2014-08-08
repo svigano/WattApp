@@ -105,7 +105,7 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
             var data = JSON.parse(data);
             if (data.length){
               data = _.map(data, function(sample){
-                return {t: moment.utc(moment(sample.t).toDate()).format('ddd'), val: sample.val}
+                return {t: moment.utc(moment.utc(sample.t).toDate()).format('ddd'), val: sample.val}
               });
             }
             return data;                    
@@ -114,7 +114,7 @@ angular.module('wattapp.rest-services', ['ngResource', 'wattapp.app-services'])
         var convertWeeklyPeakTimeToDay = function(data, headers){
             var data = JSON.parse(data);
             for (index = 0; index < data.WeeklyPeaks.length; ++index)
-                data.WeeklyPeaks[index].t = moment(moment(data.WeeklyPeaks[index].t).toDate()).format('ddd')
+                data.WeeklyPeaks[index].t = moment(moment.utc(data.WeeklyPeaks[index].t).toDate()).format('ddd')
             return data;                    
         }
         return {
