@@ -55,6 +55,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Building.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="CompanyClient.cs" />
     <Compile Include="EntityLink.cs" />
