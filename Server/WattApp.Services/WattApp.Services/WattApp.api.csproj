@@ -125,6 +125,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\EquipmentController.cs" />
     <Compile Include="Controllers\Mock\MockMeterHistoryController.cs" />
     <Compile Include="Controllers\Mock\MockMetersController.cs" />
     <Compile Include="Controllers\TimeSeriesController.cs" />
@@ -133,6 +134,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DashboardItemModel.cs" />
+    <Compile Include="Models\EquipmentModel.cs" />
     <Compile Include="Models\TimeSeriesModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

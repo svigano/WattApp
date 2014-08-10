@@ -26,6 +26,7 @@ namespace WattApp.api.Controllers
         private CloudQueue _configRequestQueue;
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
+        public const int kMockCustomerId = 1000000;
 
         public CustomerController()
         {
@@ -58,12 +59,17 @@ namespace WattApp.api.Controllers
             return Ok(new CustomerModel { Id = item.Id, Name = item.Name, Guid = item.Guid, Enabled = item.Enabled });
         }
 
-        public void PutCustomer(int id, [FromBody]CustomerModel c)
+        [Route("api/customer/{id}/discover")]
+        public IHttpActionResult DiscoverCustomer(int id)
         {
-            if (c != null)
+            Customer c = db.Customers.Find(id);
+            if (c == null)
             {
-                Trace.WriteLine(string.Format("-----------> id: {0}, name: {1}, guid: {2}, enable: {3}", c.Id, c.Name, c.Guid, c.Enabled));
-                var customerInfo = new CustomerQueueInfo() { Id = c.Id, Name = c.Name, Guid = c.Guid, Enabled = c.Enabled};
+                return NotFound();
+            }
+            else
+            {
+                var customerInfo = new CustomerQueueInfo() { Id = c.Id, Name = c.Name, Guid = c.Guid, Enabled = c.Enabled };
                 var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(customerInfo));
                 try
                 {
@@ -75,6 +81,8 @@ namespace WattApp.api.Controllers
                 }
                 _logger.Debug(string.Format("Created queue message for customer {0}", customerInfo.Guid));
             }
+
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

@@ -21,16 +21,8 @@ namespace WattApp.Webjob.Config
 
         static void Main(string[] args)
         {
-            // var host = new JobHost();
-            // host.RunAndBlock();
-
-            //var info = new CustomerQueueInfo { Guid = "perxZsvOZ0SLYqTQQP_KUg" };
-            //DiscoveryAndUpdateMeters(info);
-            IDataRepository dataRep = new DataRepository(new WattAppContext());
-            Console.WriteLine(dataRep.Points.Count());
-            var equip = new WattApp.data.Models.Equipment() { id = 27 };
-            dataRep.Delete(equip);
-            Console.WriteLine(dataRep.Points.Count());
+            var host = new JobHost();
+            host.RunAndBlock();
         }
 
         public static void DiscoveryAndUpdateMeters([QueueTrigger("wattappconfigrequest")] CustomerQueueInfo info)
