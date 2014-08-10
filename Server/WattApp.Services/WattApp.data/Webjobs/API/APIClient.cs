@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Flurl;
+using WattApp.data.Webjobs.API;
 
 namespace WattApp.WebJobs.API
 {
@@ -45,6 +46,33 @@ namespace WattApp.WebJobs.API
 
             return _executeGetRequest(url, company);
         }
+
+        // Navigate up the islocated relationship 
+        public Building GetContainerBuilding(EntityLink location, Company company)
+        {
+            Building building = null;
+            try
+            {
+                if (location.Href != null)
+                {
+                    var resp = HttpHelper.Get<Building>(company, location.Href, _tokenProvider);
+                    if (resp != null)
+                    {
+                        if (resp.Type.Id == "Building")
+                            building = resp;
+                        else
+                            building = GetContainerBuilding(resp.Location, company);
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+                building = null;
+            }
+            return building;
+        }
+
 
         private IEnumerable<Sample> _executeGetRequest(string url, Company company)
         {

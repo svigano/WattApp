@@ -74,6 +74,9 @@
     <Compile Include="Webjobs\DailyConsumptionTask.cs" />
     <Compile Include="Webjobs\DailyPeaksTask.cs" />
     <Compile Include="Webjobs\DemandRollupAndUpdatesTask.cs" />
+    <Compile Include="Webjobs\DiscoveryAndUpdateMeters.cs" />
+    <Compile Include="Webjobs\QueueInfo.cs" />
+    <Compile Include="Webjobs\RetrieveCustomersTask.cs" />
     <Compile Include="Webjobs\RetrieveDemandTimeSeriesTask.cs" />
     <Compile Include="Webjobs\Task.cs" />
   </ItemGroup>
