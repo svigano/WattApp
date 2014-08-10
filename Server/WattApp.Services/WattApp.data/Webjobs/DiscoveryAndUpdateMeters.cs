@@ -45,7 +45,7 @@ namespace WattApp.data.Webjobs
                             var ptInfo = item.PointRoles.Items.FirstOrDefault(p => p.Type.Id == supportedDemandTypes[0]);
                             if (ptInfo == null)
                                 ptInfo = item.PointRoles.Items.FirstOrDefault(p => p.Type.Id == supportedDemandTypes[1]);
-                            var point = new WattApp.data.Models.Point() { Name = ptInfo.Point.Name, Type = ptInfo.Type.Id, PxGuid = ptInfo.Point.Id, Enabled = false };
+                            var point = new WattApp.data.Models.Point() { Name = ptInfo.Point.Name, Type = ptInfo.Type.Id, PxGuid = ptInfo.Point.Id, Enabled = true };
                             equip.PointsList.Add(point);
 
                             // Retrive Building / location info

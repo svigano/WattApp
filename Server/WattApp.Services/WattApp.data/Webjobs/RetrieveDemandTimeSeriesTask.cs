@@ -15,6 +15,7 @@ namespace WattApp.data.Webjobs
     public class RetrieveDemandTimeSeriesTask : Task
     {
         private readonly APIClient _apiClient;
+        private string _customerGuid = string.Empty;
 
         public RetrieveDemandTimeSeriesTask(Logger logger, IDataRepository rep, APIClient apiClient)
             : base(logger, rep, "RetrieveDemandTimeSeries")
@@ -22,14 +23,23 @@ namespace WattApp.data.Webjobs
             _apiClient = apiClient;
         }
 
+        // TO DO Better design
+        public RetrieveDemandTimeSeriesTask(Logger logger, IDataRepository rep, APIClient apiClient, string customerGuid)
+            : base(logger, rep, "RetrieveDemandTimeSeries")
+        {
+            _apiClient = apiClient;
+            _customerGuid = customerGuid;
+        }
+
         public override bool DoWork()
         {
-            var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(_dataRep);
-            string customerGuid = string.Empty;
+            var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(_dataRep, _customerGuid);
+            
             // TO DO
             // Partial try and catch
             if (enabledEquipmentByCustomerMap.Keys.Count == 0)
                 _logger.Warn("No Customer/Equipment enabled");
+            string customerGuid = string.Empty;
             foreach (var key in enabledEquipmentByCustomerMap.Keys)
             {
                 customerGuid = key;

@@ -12,14 +12,22 @@ namespace WattApp.data.Webjobs
 {
     public class DailyConsumptionTask : Task
     {
+        private readonly string _customerGuid;
+
         public DailyConsumptionTask(Logger logger, IDataRepository rep)
             : base(logger, rep, "CalculateDailyConsumptionTask")
         {
         }
 
+        public DailyConsumptionTask(Logger logger, IDataRepository rep, string customerGuid)
+            : base(logger, rep, "CalculateDailyConsumptionTask")
+        {
+            _customerGuid = customerGuid;
+        }
+
         public override bool DoWork()
         {
-            var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(_dataRep);
+            var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(_dataRep, _customerGuid);
 
             foreach (var key in enabledEquipmentByCustomerMap.Keys)
             {
@@ -60,7 +68,7 @@ namespace WattApp.data.Webjobs
                 totalDailyConsumption = item.Value + totalDailyConsumption;
             totalDailyConsumption = Math.Round(totalDailyConsumption / 4, 2);
 
-            DataHelpers.AddDailyConsumption(_dataRep, pointID, totalDailyConsumption, currentDay);
+            DataHelpers.AddDailyConsumption(_dataRep, pointID, totalDailyConsumption, startTime);
             string str = string.Format("Equipment {0}, pointId {1}, val {2}, day {3}", equip.Name, pointID, totalDailyConsumption, currentDay);
             _logger.Debug(str);
         }

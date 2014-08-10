@@ -23,17 +23,29 @@ namespace WattApp.Webjob.Config
         {
             var host = new JobHost();
             host.RunAndBlock();
+            //DiscoveryAndUpdateMeters(new CustomerDiscoverQueueInfo() { DiscoveryOption = DiscoveryOption.eMeterAndSamples, Guid = "950BRrQp5Ea2O-CJNdVV3A" });
         }
 
-        public static void DiscoveryAndUpdateMeters([QueueTrigger("wattappconfigrequest")] CustomerQueueInfo info)
+        public static void DiscoveryAndUpdateMeters([QueueTrigger("wattappconfigrequest")] CustomerDiscoverQueueInfo info)
         {
             _logger.Debug("DiscoverCustomer has been triggered on " + info.Guid);
             IDataRepository dataRep = new DataRepository(new WattAppContext());
-            var apiclinet = _initAPIClient();
+            var apiclient = _initAPIClient(); 
+            var taskList = new List<ITask>();
+
             try
             {
-                var task = new DiscoveryAndUpdateMeters(_logger, dataRep, apiclinet, info.Guid);
-                task.Execute();
+                if (info.DiscoveryOption == DiscoveryOption.eMeterAndSamples)
+                {
+                    taskList.Add(new DiscoveryAndUpdateMeters(_logger, dataRep, apiclient, info.Guid));
+                    taskList.Add(new RetrieveDemandTimeSeriesTask(_logger, dataRep, apiclient, info.Guid));
+                    taskList.Add(new DemandRollupAndUpdatesTask(_logger, dataRep, info.Guid));
+                    taskList.Add(new DailyConsumptionTask(_logger, dataRep, info.Guid));
+                    taskList.Add(new DailyPeaksTask(_logger, dataRep, info.Guid));
+                }
+
+                foreach (var item in taskList)
+                    item.Execute();
             }
             catch (Exception e)
             {

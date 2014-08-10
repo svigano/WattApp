@@ -17,12 +17,14 @@ using System.Configuration;
 using NLog;
 using WattApp.data.Webjobs;
 using Newtonsoft.Json;
+using WattApp.data.Repositories;
 
 namespace WattApp.api.Controllers
 {
     public class CustomerController : ApiController
     {
-        private WattAppContext db = new WattAppContext();
+        private IDataRepository _dataRep = null;
+
         private CloudQueue _configRequestQueue;
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -30,19 +32,18 @@ namespace WattApp.api.Controllers
 
         public CustomerController()
         {
+            _dataRep = new DataRepository(new WattAppContext());
             _initializeStorage();
         }
 
         // GET api/Customer
         public IQueryable<CustomerModel> GetCustomers()
         {
-            var r = db.Customers;
             List<CustomerModel> customers = new List<CustomerModel>();
 
-            foreach (var item in r)
+            foreach (var item in _dataRep.Customers)
                 customers.Add(new CustomerModel { Id = item.Id, Name = item.Name, Guid = item.Guid, Enabled = item.Enabled});
 
-            Console.WriteLine(r.Count());
             return customers.AsQueryable<CustomerModel>();
         }
 
@@ -50,7 +51,7 @@ namespace WattApp.api.Controllers
         [ResponseType(typeof(CustomerModel))]
         public IHttpActionResult GetCustomer(int id)
         {
-            Customer item = db.Customers.Find(id);
+            Customer item = _dataRep.Customers.Find(id);
             if (item == null)
             {
                 return NotFound();
@@ -62,36 +63,34 @@ namespace WattApp.api.Controllers
         [Route("api/customer/{id}/discover")]
         public IHttpActionResult DiscoverCustomer(int id)
         {
-            Customer c = db.Customers.Find(id);
+            Customer c = _dataRep.Customers.Find(id);
             if (c == null)
             {
                 return NotFound();
             }
             else
             {
-                var customerInfo = new CustomerQueueInfo() { Id = c.Id, Name = c.Name, Guid = c.Guid, Enabled = c.Enabled };
-                var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(customerInfo));
+                // Enable Customer
+                if (!c.Enabled)
+                {
+                    c.Enabled = true;
+                    _dataRep.Update(c);
+                }
+                // Create a messageQueue
+                var customerInfo = new CustomerDiscoverQueueInfo() { Id = c.Id, Guid = c.Guid, DiscoveryOption = DiscoveryOption.eMeterAndSamples };
                 try
                 {
+                    var queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(customerInfo));
                     _configRequestQueue.AddMessage(queueMessage);
                 }
                 catch (Microsoft.WindowsAzure.Storage.StorageException e)
                 {
-                    Trace.TraceError(e.Message);
+                    _logger.Error("DiscoverCustomer", e);
                 }
                 _logger.Debug(string.Format("Created queue message for customer {0}", customerInfo.Guid));
             }
 
             return Ok();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
 
         private void _initializeStorage()
@@ -107,7 +106,7 @@ namespace WattApp.api.Controllers
 
         private bool CustomerExists(int id)
         {
-            return db.Customers.Count(e => e.Id == id) > 0;
+            return _dataRep.Customers.Count(e => e.Id == id) > 0;
         }
     }
 }

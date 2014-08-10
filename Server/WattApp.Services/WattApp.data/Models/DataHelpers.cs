@@ -13,7 +13,7 @@ namespace WattApp.data.Models
         public const int kDefaultEndDayMinute = 59;
         public const int kDefaultEndDaySeconds = 59;
 
-        public static Dictionary<string, List<data.Models.Equipment>> FindEnabledEquipment(IDataRepository dataRep)
+        public static Dictionary<string, List<data.Models.Equipment>> FindEnabledEquipment(IDataRepository dataRep, string customerGuid = null)
         {
             List<data.Models.Equipment> equipList = new List<data.Models.Equipment>();
             var map = new Dictionary<string, List<WattApp.data.Models.Equipment>>();
@@ -24,6 +24,8 @@ namespace WattApp.data.Models
                     where c.Customer.Enabled == true
                     select new { Equipment = c, CustomerGuid = p.Guid };
 
+            if (!string.IsNullOrEmpty(customerGuid))
+                q = q.Where(c => c.CustomerGuid == customerGuid);
 
             foreach (var item in q)
             {

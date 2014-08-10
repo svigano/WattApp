@@ -11,15 +11,23 @@ namespace WattApp.data.Webjobs
 {
     public class DemandRollupAndUpdatesTask : Task
     {
+        private string _customerGuid = string.Empty;
+
         public DemandRollupAndUpdatesTask(Logger logger, IDataRepository rep)
             : base(logger, rep, "DemandRollupAndUpdates")
         {
         }
 
+        public DemandRollupAndUpdatesTask(Logger logger, IDataRepository rep, string customerGuid)
+            : base(logger, rep, "DemandRollupAndUpdates")
+        {
+            _customerGuid = customerGuid;
+        }
+
         public override bool DoWork()
         {
             var numOfUpdatedEquipment = 0;
-            var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(_dataRep);
+            var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(_dataRep, _customerGuid);
 
             // Update All the equipment last value demand and calculate the new deltademand value
             foreach (var key in enabledEquipmentByCustomerMap.Keys)
@@ -31,7 +39,7 @@ namespace WattApp.data.Webjobs
                         var lastSample = _dataRep.GetLastSampleByPoint(equip.PointsList.First().id, SampleType.Demand);
 
                         // New data, update demand and delta demand
-                        if (lastSample.TimeStamp > equip.LastUpdateTime)
+                        if (lastSample != null && lastSample.TimeStamp > equip.LastUpdateTime)
                         {
                             equip.LastUpdateTime = lastSample.TimeStamp;
                             equip.LastDemand = lastSample.Value;
@@ -39,7 +47,7 @@ namespace WattApp.data.Webjobs
                             // get closest lastSample in the previous 24h
                             // TO DO set a tollerance 1h ??
                             var yesterdaySample = _dataRep.GetSampleByClosestTimeStamp(equip.PointsList.First().id, lastSample.TimeStamp.Subtract(TimeSpan.FromHours(24)), SampleType.Demand);
-                            if (yesterdaySample != null)
+                            if (yesterdaySample != null && yesterdaySample.Value > 0)
                             {
                                 var delta = Math.Round((lastSample.Value / yesterdaySample.Value - 1) * 100, 1);
                                 _logger.Debug(string.Format("Latest lastSample time {0} val: {1} closest 24h past lastSample time {2} val {3} delta {4}",

@@ -54,7 +54,14 @@ namespace WattApp.api.Controllers
         {
             if (customerId != CustomerController.kMockCustomerId)
             {
-                var equipList = _dataRep.Equipment.Where(e => e.Customer.Id == customerId);
+                // TMP Disable Customer
+                var c = _dataRep.Customers.Find(customerId);
+                if (c != null)
+                {
+                    c.Enabled = false;
+                    _dataRep.Update(c);
+                }
+                var equipList = _dataRep.Equipment.Where(e => e.Customer.Id == customerId).ToList();
                 if (equipList == null)
                     return NotFound();
                 foreach (var item in equipList)

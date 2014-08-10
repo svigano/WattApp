@@ -12,13 +12,20 @@ namespace WattApp.data.Webjobs
 {
     public class DailyPeaksTask : Task
     {
+        private readonly string _customerGuid;
+
         public DailyPeaksTask(Logger logger, IDataRepository rep) : base(logger, rep, "CalculateDailyPeaks")
         {
         }
 
+        public DailyPeaksTask(Logger logger, IDataRepository rep, string customerGuid) : base(logger, rep, "CalculateDailyPeaks")
+        {
+            _customerGuid = customerGuid;
+        }
+
         public override bool DoWork()
         {
-            var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(_dataRep);
+            var enabledEquipmentByCustomerMap = DataHelpers.FindEnabledEquipment(_dataRep, _customerGuid);
 
             foreach (var key in enabledEquipmentByCustomerMap.Keys)
             {
@@ -53,7 +60,7 @@ namespace WattApp.data.Webjobs
                                    select g.OrderByDescending(s => s.Value).FirstOrDefault()).FirstOrDefault();
             if (dailyPeakDemand != null)
             {
-                DataHelpers.AddDailyPeakDemand(_dataRep, dailyPeakDemand.PointId, dailyPeakDemand.Value, currentDay);
+                DataHelpers.AddDailyPeakDemand(_dataRep, dailyPeakDemand.PointId, dailyPeakDemand.Value, startTime);
                 string str = string.Format("equipment {0}, pointId {1}, val {2}, ts {3}", equip.Name, dailyPeakDemand.PointId, Math.Round(dailyPeakDemand.Value, 2), dailyPeakDemand.TimeStamp);
                 _logger.Debug(str);
             }
