@@ -12,7 +12,8 @@ namespace WattApp.api
             // Web API configuration and services
             
             // Enable CORS
-            var cors = new System.Web.Http.Cors.EnableCorsAttribute("wattappapi.azurewebsites.net", "*", "*");
+            //var cors = new System.Web.Http.Cors.EnableCorsAttribute("wattappapi.azurewebsites.net", "*", "*");
+            var cors = new System.Web.Http.Cors.EnableCorsAttribute("*", "*", "*");
             config.EnableCors(cors);
 
             // Web API routes
