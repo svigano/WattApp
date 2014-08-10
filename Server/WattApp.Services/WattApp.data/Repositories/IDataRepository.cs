@@ -20,6 +20,7 @@ namespace WattApp.data.Repositories
         IQueryable<Point> GetAllPointsByEquipment(int equiId);
         void Insert(IEnumerable<Equipment> list);
         void Update(Equipment e);
+        void Delete(Equipment e);
         
         // Points
         IDbSet<Point> Points { get; }

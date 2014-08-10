@@ -54,6 +54,16 @@ namespace WattApp.data.Repositories
             _ctxDb.SaveChanges();
         }
 
+        public void Delete(Equipment e)
+        {
+            var entityToBeDeleted = _ctxDb.Equipment.Find(e.id);
+            if (entityToBeDeleted != null)
+            {
+                _ctxDb.Equipment.Remove(entityToBeDeleted);
+                _ctxDb.SaveChanges();
+            }
+        }
+
 
         public IQueryable<Point> GetAllPointsByEquipment(int equiId)
         { 
